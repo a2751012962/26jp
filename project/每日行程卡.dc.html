@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: oklch(0.93 0.008 85); }
+a { color: oklch(0.52 0.09 245); }
+a:hover { color: oklch(0.42 0.09 245); }
+</style>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1f4e79"></rect><text x="50" y="60" font-family="sans-serif" font-size="26" font-weight="700" fill="#fdfcf9" text-anchor="middle">行程</text></svg></template>
+</helmet>
+<div style="display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3vw,48px);padding:clamp(16px,3vw,48px) clamp(10px,2vw,24px);font-family:'Noto Sans SC',sans-serif">
+<div style="{{ themeVars }}">
+
+<div style="position:sticky;top:0;z-index:30;box-sizing:border-box;display:flex;align-items:center;gap:clamp(6px,1.4vw,14px);width:min(1080px,100%);padding:clamp(8px,1.2vw,12px) clamp(8px,1.6vw,14px);background:oklch(0.93 0.008 85 / 0.94);backdrop-filter:blur(8px)">
+  <div onClick="{{ prev }}" title="上一天" style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:clamp(30px,5vw,40px);height:clamp(30px,5vw,40px);cursor:pointer;color:oklch(0.35 0.015 60);background:oklch(0.985 0.006 85);font:400 clamp(15px,2.4vw,20px)/1 'Noto Sans SC'" style-hover="background:oklch(1 0 0)">‹</div>
+  <div ref="{{ navRef }}" style="flex:1 1 auto;display:flex;gap:clamp(4px,1vw,8px);overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth">
+    <sc-for list="{{ navDays }}" as="d" hint-placeholder-count="9">
+      <div onClick="{{ d.go }}" style="{{ d.style }}">{{ d.label }}</div>
+    </sc-for>
+  </div>
+  <div onClick="{{ next }}" title="下一天" style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:clamp(30px,5vw,40px);height:clamp(30px,5vw,40px);cursor:pointer;color:oklch(0.35 0.015 60);background:oklch(0.985 0.006 85);font:400 clamp(15px,2.4vw,20px)/1 'Noto Sans SC'" style-hover="background:oklch(1 0 0)">›</div>
+</div>
+
+<div ref="{{ railRef }}" onScroll="{{ onScroll }}" style="display:flex;align-items:flex-start;gap:clamp(18px,3vw,48px);width:100%;box-sizing:border-box;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:clamp(10px,1.6vw,20px) max(0px, calc((100% - min(1080px, 100%)) / 2))">
+
+<div id="day1" data-screen-label="8/17" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 1 · 8月17日（周一）ovo</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">羽田 → 镰仓</div>
+    </div>
+    <div style="font:400 1.06em/1.35 'Noto Sans SC';color:oklch(0.5 0.02 60);padding-bottom:8px;text-align:right">首日接机</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));font-variant-numeric:tabular-nums">15:00</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">羽田空港 接机</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:8px;display:var(--note,block)">航班14:00到，取完行李上车</div>
+    </div>
+    <div style="font:400 25px/1 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 60分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">16:15‒17:15</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">镰仓 小町通り</div></div>
+    <div style="font:400 25px/1 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 20分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">17:35‒17:55</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">七里ヶ浜</div></div>
+    <div style="font:400 25px/1 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 就近</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">18:00‒19:15</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">bills 七里ヶ浜 晚餐</div></div>
+    <div style="font:400 25px/1 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 15分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">19:30</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">江の島（夜景）→ 送酒店</div></div>
+    <div></div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,22px) clamp(14px,2.2vw,24px);margin-top:clamp(12px,2vw,24px)">
+    <div style="font:700 28px/1.3 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 27px/1.5 'Noto Sans SC';color:oklch(0.38 0.015 60)">航班延误、15:30 后才上车 → 跳过小町通，直接开七里ヶ浜，保证 18:00 到 bills</div>
+  </div>
+  <div style="display:flex;gap:32px;margin-top:clamp(18px,2.8vw,36px);font:400 1em/1.4 'Noto Sans SC';color:oklch(0.6 0.02 60);flex-wrap:wrap">
+    <span style="color:var(--ac,oklch(0.55 0.09 245))">■ 出发时间</span>
+    <span style="color:oklch(0.58 0.13 12)">■ 已预约·不能迟到</span>
+    <span>■ 备用方案</span>
+    <span>地点名后有图标 · 点一下即复制</span>
+  </div>
+</div>
+
+<div id="day2" data-screen-label="8/18" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 2 · 8月18日（周二）</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">镰仓 → 热海</div>
+    </div>
+    <div style="font:700 1.06em/1.35 'Noto Sans SC';color:oklch(0.985 0.006 85);background:var(--acDeep,oklch(0.45 0.09 245));padding:clamp(6px,1.1vw,12px) clamp(9px,1.7vw,18px);margin-bottom:8px;white-space:nowrap">★ 换酒店·装行李</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));font-variant-numeric:tabular-nums">08:15 出发</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">HOTEL AO KAMAKURA</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">08:25‒08:45</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">七里ヶ浜</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">08:50‒09:15</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">镰仓高校前</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">江ノ電拍照，每约12分一班</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">09:20</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">江の島 下车</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">上行走エスカー约20分到鱼见亭（扶梯只上不下）</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">09:40</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">鱼见亭 排队</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.13 12);margin-top:6px">10:00开门前必须到位</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">10:00‒11:00</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">鱼见亭 用餐</div></div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">11:10‒11:30</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">江の島岩屋</div>
+      
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">11:35‒11:50</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">稚児ヶ淵 乘 べんてん丸 回弁天橋</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">约7分，无固定班次，2艘轮流，一般等5〜10分</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));font-variant-numeric:tabular-nums">12:00</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">弁天橋 本土側 上车 → 热海</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">船和步行都在同一处上车</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 90分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">13:35‒15:15</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">MOA美術館</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">游客反馈最少需1.5〜2小时；最终入馆16:00</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">15:30‒16:15</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">起雲閣</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">一圈实测约40分；最终入馆16:30</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 5分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">16:25 到店</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">Kimonoya</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.13 12);margin-top:6px">16:30 发型师预约，不可迟到</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">17:45</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">银座商店街 放下</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">在此晚餐，之后步行去沙滩看花火，晚上不用车</div>
+    </div>
+    <div></div>
+  </div>
+  
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(6px,1vw,10px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">12:30 后才离开江の島 → 放弃起雲閣，MOA 改 14:10‒15:50，16:25 直接到 Kimonoya</div>
+  </div>
+  
+</div>
+
+<div id="day3" data-screen-label="8/19" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 3 · 8月19日（周三）</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">热海 → 伊东 → 稲取</div>
+    </div>
+    <div style="font:700 1.06em/1.35 'Noto Sans SC';color:oklch(0.985 0.006 85);background:var(--acDeep,oklch(0.45 0.09 245));padding:clamp(6px,1.1vw,12px) clamp(9px,1.7vw,18px);margin-bottom:8px;white-space:nowrap">★ 换酒店·装行李</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));font-variant-numeric:tabular-nums">08:00 出发</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">Atami Seaside Spa &amp; Resort</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">赶大室山首班缆车。</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 50分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">08:50 到达</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">大室山 停车场</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.13 12);margin-top:6px">缆车09:00开始运行，务必开门前排上队</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">09:00‒10:15</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">大室山</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">缆车单程6分＋火口一周；暑假期间迟到会排30〜60分，中午可达1小时以上</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 5分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">10:25‒12:25</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">伊豆シャボテン動物公園</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">时间可缩短</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 5分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">12:30‒13:30</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">Ohmuro Luncheonette 午餐</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 20分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">13:50‒14:50</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">城ヶ崎海岸·門脇吊橋</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">停车场步行5〜10分，吊橋＋灯台一带约30〜60分</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 30分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">15:20‒15:50</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">Kazumura（猪排饭）</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">16:10</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">稲取荘 入住</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">当晚泡温泉，时间充裕</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(12px,2vw,24px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">山顶有薄雾 → 仍照常09:00上山，在山顶等雾散（上午多会散）；不要为了等雾改到中午，那时排队最长</div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(6px,1vw,10px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">确定整天大雾∕强风停运 → 09:00‒11:00 先动物公园，午餐11:10‒12:10，13:00 再看情况上大室山（预留排队30分）</div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(6px,1vw,10px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">动物公园只逛1小时 → 可加回 小室山（约40分）</div>
+  </div>
+  <div style="display:flex;gap:16px;background:oklch(0.95 0.03 25);padding:22px 24px;margin-top:clamp(10px,1.6vw,20px)">
+    <div style="font:700 27px/1.4 'Noto Sans SC';color:oklch(0.5 0.13 25)">⚠</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.42 0.09 25)">大室山缆车 3〜9月 09:00‒17:00（下行末班17:15），荒天·强风会停运，出发前查官网运行情况。</div>
+  </div>
+</div>
+
+<div id="day4" data-screen-label="8/20" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 4 · 8月20日（周四）</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">南伊豆·下田 一日</div>
+    </div>
+    <div style="font:400 1.06em/1.35 'Noto Sans SC';color:oklch(0.5 0.02 60);padding-bottom:8px;text-align:right">住同一酒店·行李留房</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));font-variant-numeric:tabular-nums">09:30 出发</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">稲取荘</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">前提：8/19 已泡过温泉。石廊崎17:00闭园</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 35分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">10:05‒10:45</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">白浜海岸·伊古奈比咩命神社</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 15分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">11:00‒11:30</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">九十浜</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 15分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">11:45‒12:15</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">爪木崎</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 20分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">12:35‒14:15</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">下田 黒船·午餐·下田公园</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 25分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">14:45‒15:15</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">竜宮窟</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 15分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">15:30‒15:50</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">弓ヶ浜</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 15分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">16:05‒17:00</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">石廊崎オーシャンパーク</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.13 12);margin-top:6px">营业8:30‒17:00，务必16:15前入园；停车场到岬角单程约10分</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 5分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">17:05‒18:45</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">ユウスゲ公園·愛逢岬</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">距石廊崎仅0.7km；旁边 SOUTHPOINT 咖啡可等日落，日落约18:25</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 70分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">20:00</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">回稲取荘</div></div>
+    <div></div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(12px,2vw,24px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">8/19 晚上没泡成酒店温泉 → 改 08:30 出发，全天提前1小时，石廊崎 15:05‒16:00，ユウスゲ公園 只停30分（16:05‒16:35，不等日落），17:45 回酒店泡温泉、赶上旅馆晚餐</div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(6px,1vw,10px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">天气阴看不到日落 → 石廊崎结束后直接返程，18:15 到酒店</div>
+  </div>
+</div>
+
+<div id="day5" data-screen-label="8/21" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 5 · 8月21日（周五）</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">稲取 → 中伊豆 → 箱根</div>
+    </div>
+    <div style="font:700 1.06em/1.35 'Noto Sans SC';color:oklch(0.985 0.006 85);background:var(--acDeep,oklch(0.45 0.09 245));padding:clamp(6px,1.1vw,12px) clamp(9px,1.7vw,18px);margin-bottom:8px;white-space:nowrap">★ 换酒店·装行李</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));font-variant-numeric:tabular-nums">08:30 出发</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">稲取荘</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 60分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">09:30‒10:10</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">浄蓮の滝</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">10:20‒10:35</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">天城わさび村</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">短停，买纪念品，吃冰淇淋</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 15分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">10:50 到店</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">浅草じゅうろく 修善寺はなれ</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.13 12);margin-top:6px">11:00开门前排队</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">11:00‒12:00</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">午餐</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">12:15‒12:50</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">修善寺</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 15分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">13:10‒14:40</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">伊豆パノラマパーク</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">缆车往返＋碧テラス，目安60〜120分</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 85分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">16:10‒17:00</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">成川美術館</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">最终入馆16:30</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 5分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">17:10‒17:45</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">箱根神社 平和の鳥居</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">拍照，天气好务必今天拍完</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 25分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">18:15</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">翠雲 入住</div></div>
+    <div></div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(12px,2vw,24px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">じゅうろく 排队超过 30 分 → 缩短修善寺停留，パノラマパーク 改 13:40 上山</div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(6px,1vw,10px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">16:20 后才到元箱根 → 放弃成川美術館，直接去鳥居拍照，17:00‒17:45</div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(6px,1vw,10px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">当天下雨拍不成 → 鳥居改到 8/23 早上补，8/23 提前到 08:00 出发</div>
+  </div>
+</div>
+
+<div id="day6" data-screen-label="8/22" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 6 · 8月22日（周六）</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">箱根 一日</div>
+    </div>
+    <div style="font:400 1.06em/1.35 'Noto Sans SC';color:oklch(0.5 0.02 60);padding-bottom:8px;text-align:right">住同一酒店·行李留房</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));font-variant-numeric:tabular-nums">09:00 出发</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">翠雲（強羅）</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">先上山，下午再下山看美术馆</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">09:20</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">早雲山 换乘缆车上大涌谷</div></div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">09:45‒11:45</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">大涌谷</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">山上吃午饭，11:00 前入座避开高峰</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 30分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">12:15 到馆</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">箱根ラリック美術館</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.13 12);margin-top:6px">一到就取下午茶整理券（东方快车餐车），先确认剩余场次</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:var(--acSoft,oklch(0.96 0.02 245));padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(10px,1.6vw,20px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:var(--acDeep,oklch(0.45 0.09 245))">方案 A</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.35 0.03 245)">取到 13:00 前后场：12:20‒14:20 参观＋下午茶 → 14:35‒15:45 ポーラ美術館 → 16:00‒16:45 ガラスの森</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:var(--acSoft,oklch(0.96 0.02 245));padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(6px,1vw,10px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:var(--acDeep,oklch(0.45 0.09 245))">方案 B</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.35 0.03 245)">只剩 15:00 以后场：12:30‒14:00 ポーラ美術館 → 14:20 回ラリック，14:30‒16:30 下午茶 → ガラスの森 省略</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80);margin-top:clamp(6px,1vw,10px);border-top:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">17:00</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">Beef pot Ukon 晚餐 → 送酒店</div></div>
+    <div></div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(12px,2vw,24px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">16:45 赶不及 → 省略最后一馆，保证 17:00 到 Ukon</div>
+  </div>
+  <div style="display:flex;gap:16px;background:oklch(0.95 0.03 25);padding:22px 24px;margin-top:clamp(10px,1.6vw,20px)">
+    <div style="font:700 27px/1.4 'Noto Sans SC';color:oklch(0.5 0.13 25)">⚠</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.42 0.09 25)">下午茶预留满 120 分钟。先上山可避开大涌谷的人潮与午后云雾。</div>
+  </div>
+</div>
+
+<div id="day7" data-screen-label="8/23" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 7 · 8月23日（周日）</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">箱根 → 东京</div>
+    </div>
+    <div style="font:700 1.06em/1.35 'Noto Sans SC';color:oklch(0.985 0.006 85);background:var(--acDeep,oklch(0.45 0.09 245));padding:clamp(6px,1.1vw,12px) clamp(9px,1.7vw,18px);margin-bottom:8px;white-space:nowrap">★ 退房·行李随车</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));font-variant-numeric:tabular-nums">09:00 出发</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">翠雲 退房</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">鳥居已于8/21晚拍完，早上可晚起</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 25分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">09:30‒11:00</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">箱根園 駒ヶ岳ロープウェー</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">上行末班16:30，每20分一班</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 25分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">11:45‒12:45</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">森メシ 午餐</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 10分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">13:00‒14:15</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">彫刻の森美術館</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">官方主环线60〜90分，本次只走主环线</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 15分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">14:30‒15:00</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">箱根湯本 站前商店街</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 115分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">17:00‒17:30</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">PÂTISSERIE ASAKO IWAYANAGI</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.13 12);margin-top:6px">世田谷区等々力4-4-5　03-6432-3878　已预约</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 30分</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">18:00</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">六本木酒店 卸行李·入住</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 就近</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">18:30</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">六本木新城 展望台</div></div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.58 0.13 12);font-variant-numeric:tabular-nums">20:00</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">焼肉 うし松</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.13 12);margin-top:6px">已预约</div>
+    </div>
+    <div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(11px,1.8vw,20px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60);font-variant-numeric:tabular-nums">22:00</div>
+    <div><div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">东京铁塔 → 送酒店</div></div>
+    <div></div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(12px,2vw,24px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">14:30 前出不了汤本 → 跳过商店街，直接上高速，保证 17:00 甜品店</div>
+  </div>
+  <div style="display:var(--fb,grid);grid-template-columns:clamp(102px,23vw,190px) 1fr;gap:clamp(10px,2vw,24px);background:oklch(0.94 0.004 80);padding:clamp(14px,2vw,20px) clamp(14px,2.2vw,24px);margin-top:clamp(6px,1vw,10px)">
+    <div style="font:700 1.06em/1.4 'Noto Sans SC';color:oklch(0.5 0.02 60)">如果</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.38 0.015 60)">8/21 鳥居没拍成 → 改 08:00 出发，先去箱根神社，其余顺延，湯本商店街取消</div>
+  </div>
+  <div style="display:flex;gap:16px;background:oklch(0.95 0.03 25);padding:22px 24px;margin-top:clamp(10px,1.6vw,20px)">
+    <div style="font:700 27px/1.4 'Noto Sans SC';color:oklch(0.5 0.13 25)">⚠</div>
+    <div style="font:400 1em/1.6 'Noto Sans SC';color:oklch(0.42 0.09 25)">周日下午东名·首都可能高拥堵</div>
+  </div>
+</div>
+
+<div id="day8" data-screen-label="8/24" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 8 · 8月24日（周一）</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">东京市内</div>
+    </div>
+    <div style="font:700 1.06em/1.35 'Noto Sans SC';color:oklch(0.35 0.01 60);background:oklch(0.9 0.01 80);padding:clamp(6px,1.1vw,12px) clamp(9px,1.7vw,18px);margin-bottom:8px;white-space:nowrap">不用车</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(14px,2.2vw,26px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:oklch(0.25 0.01 60)">全天</div>
+    <div><div style="font:700 32px/1.4 'Noto Serif SC';color:oklch(0.25 0.01 60)">森美術館 / 表参道 / 涩谷（Shibuya Sky 16:40）/ 麻布十番</div></div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">地铁·步行</div>
+  </div>
+</div>
+
+<div id="day9" data-screen-label="8/25" style="flex:0 0 min(1080px,100%);scroll-snap-align:center;box-sizing:border-box;font-size:clamp(12px,2.2vw,24px);background:oklch(0.985 0.006 85);padding:clamp(24px,4vw,64px) clamp(20px,4vw,64px) clamp(26px,3.6vw,56px);box-shadow:0 2px 24px oklch(0.5 0.02 80 / 0.12)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:clamp(10px,2vw,24px);padding-bottom:clamp(12px,2vw,24px);border-bottom:3px solid oklch(0.25 0.01 60)">
+    <div>
+      <div style="font:400 1.06em/1.35 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245));letter-spacing:0.08em">DAY 9 · 8月25日（周二）</div>
+      <div style="font:700 2.4em/1.2 'Noto Serif SC';color:oklch(0.25 0.01 60);margin-top:clamp(6px,1.2vw,14px)">东京 → 羽田</div>
+    </div>
+    <div style="font:400 1.06em/1.35 'Noto Sans SC';color:oklch(0.5 0.02 60);padding-bottom:8px;text-align:right">送机</div>
+  </div>
+  <div style="display:grid;grid-template-columns:clamp(102px,23vw,190px) 1fr auto;gap:clamp(10px,2vw,24px);align-items:baseline;padding:var(--rp,clamp(14px,2.2vw,26px)) 0;border-bottom:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.33em/1.25 'Noto Sans SC';color:var(--ac,oklch(0.55 0.09 245))">待定</div>
+    <div>
+      <div onClick="{{ copyName }}" title="点击复制地点名" style="font:700 1.33em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60);cursor:pointer;text-underline-offset:4px" style-hover="text-decoration:underline dotted" style-after="content:'';display:inline-block;width:0.7em;height:0.7em;flex:0 0 auto;margin-left:0.4em;vertical-align:-0.08em;background:currentColor;opacity:0.32;-webkit-mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E&quot;);mask-size:contain;mask-repeat:no-repeat;mask-position:center">三井花园酒店六本木 → 羽田空港</div>
+      <div style="font:400 1em/1.55 'Noto Sans SC';color:oklch(0.52 0.02 60);margin-top:6px;display:var(--note,block)">按起飞前3小时到达倒推，另行通知</div>
+    </div>
+    <div style="font:400 1em/1.3 'Noto Sans SC';color:oklch(0.58 0.02 60);text-align:right">▶ 35分</div>
+  </div>
+  <div style="margin-top:clamp(18px,2.8vw,36px);padding-top:clamp(14px,2.2vw,28px);border-top:1px solid oklch(0.9 0.01 80)">
+    <div style="font:700 1.25em/1.35 'Noto Serif SC';color:oklch(0.25 0.01 60)">住宿一览（8晚）</div>
+    <div style="display:grid;grid-template-columns:clamp(96px,21vw,220px) 1fr clamp(80px,18vw,240px);gap:clamp(8px,1.6vw,20px);padding:clamp(10px,1.5vw,16px) 0;font:400 1em/1.5 'Noto Sans SC';color:oklch(0.35 0.015 60);border-bottom:1px solid oklch(0.92 0.008 80)">
+      <div>8/17（1晚）</div><div>HOTEL AO KAMAKURA</div><div style="color:oklch(0.55 0.02 60)">镰仓·七里ヶ浜</div>
+    </div>
+    <div style="display:grid;grid-template-columns:clamp(96px,21vw,220px) 1fr clamp(80px,18vw,240px);gap:clamp(8px,1.6vw,20px);padding:clamp(10px,1.5vw,16px) 0;font:400 1em/1.5 'Noto Sans SC';color:oklch(0.35 0.015 60);border-bottom:1px solid oklch(0.92 0.008 80)">
+      <div>8/18（1晚）</div><div>Atami Seaside Spa &amp; Resort</div><div style="color:oklch(0.55 0.02 60)">热海</div>
+    </div>
+    <div style="display:grid;grid-template-columns:clamp(96px,21vw,220px) 1fr clamp(80px,18vw,240px);gap:clamp(8px,1.6vw,20px);padding:clamp(10px,1.5vw,16px) 0;font:400 1em/1.5 'Noto Sans SC';color:oklch(0.35 0.015 60);border-bottom:1px solid oklch(0.92 0.008 80)">
+      <div>8/19‒8/20（2晚）</div><div>稲取荘</div><div style="color:oklch(0.55 0.02 60)">东伊豆·稲取</div>
+    </div>
+    <div style="display:grid;grid-template-columns:clamp(96px,21vw,220px) 1fr clamp(80px,18vw,240px);gap:clamp(8px,1.6vw,20px);padding:clamp(10px,1.5vw,16px) 0;font:400 1em/1.5 'Noto Sans SC';color:oklch(0.35 0.015 60);border-bottom:1px solid oklch(0.92 0.008 80)">
+      <div>8/21‒8/22（2晚）</div><div>強羅温泉 雪月花別邸 翠雲</div><div style="color:oklch(0.55 0.02 60)">箱根·強羅</div>
+    </div>
+    <div style="display:grid;grid-template-columns:clamp(96px,21vw,220px) 1fr clamp(80px,18vw,240px);gap:clamp(8px,1.6vw,20px);padding:clamp(10px,1.5vw,16px) 0;font:400 1em/1.5 'Noto Sans SC';color:oklch(0.35 0.015 60)">
+      <div>8/23‒8/24（2晚）</div><div>三井ガーデンホテル六本木プレミア</div><div style="color:oklch(0.55 0.02 60)">东京·六本木</div>
+    </div>
+    <div style="margin-top:24px;font:400 1em/1.7 'Noto Sans SC';color:oklch(0.45 0.02 60)">换酒店日（需装行李）：8/18 · 8/19 · 8/21 · 8/23<br>乘客电话：＿＿＿＿＿＿＿＿＿＿　　司机电话：＿＿＿＿＿＿＿＿＿＿</div>
+  </div>
+</div>
+
+</div>
+</div>
+<div style="{{ toastStyle }}">已复制地点名</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;海蓝（原版）&quot;,&quot;墨绿&quot;,&quot;赤茶&quot;],&quot;default&quot;:&quot;海蓝（原版）&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;外观&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;宽松&quot;,&quot;标准&quot;,&quot;紧凑&quot;],&quot;default&quot;:&quot;标准&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;外观&quot;},&quot;brief&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;内容&quot;}}">
+class Component extends DCLogic {
+  state = { toast: false, idx: 0 };
+  rail = React.createRef();
+  labels = ["8/17", "8/18", "8/19", "8/20", "8/21", "8/22", "8/23", "8/24", "8/25"];
+  storeKey = "trip-card-idx-0817";
+
+  componentDidMount() {
+    let saved = 0;
+    try { saved = parseInt(localStorage.getItem(this.storeKey) || "0", 10) || 0; } catch (e) {}
+    saved = Math.max(0, Math.min(this.labels.length - 1, saved));
+    this.setState({ idx: saved });
+    requestAnimationFrame(() => { this.scrollTo(saved, "auto"); this.centerChip(saved); });
+  }
+
+  cards() {
+    const r = this.rail.current;
+    return r ? Array.from(r.children) : [];
+  }
+
+  scrollTo(i, behavior) {
+    const r = this.rail.current, c = this.cards()[i];
+    if (!r || !c) return;
+    r.scrollTo({ left: c.offsetLeft - r.offsetLeft, behavior: behavior || "smooth" });
+  }
+
+  nav = React.createRef();
+
+  centerChip(i) {
+    const n = this.nav.current;
+    if (!n) return;
+    const chip = n.children[i];
+    if (!chip) return;
+    const target = chip.offsetLeft - n.offsetLeft - (n.clientWidth - chip.offsetWidth) / 2;
+    n.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+  }
+
+  go(i) {
+    const n = Math.max(0, Math.min(this.labels.length - 1, i));
+    this.setState({ idx: n });
+    this.scrollTo(n);
+    this.centerChip(n);
+    try { localStorage.setItem(this.storeKey, String(n)); } catch (e) {}
+  }
+  renderVals() {
+    const p = this.props;
+    const themes = {
+      "海蓝（原版）": ["oklch(0.55 0.09 245)", "oklch(0.45 0.09 245)", "oklch(0.96 0.02 245)"],
+      "墨绿": ["oklch(0.5 0.08 165)", "oklch(0.4 0.07 165)", "oklch(0.95 0.02 165)"],
+      "赤茶": ["oklch(0.53 0.1 40)", "oklch(0.43 0.09 40)", "oklch(0.96 0.02 40)"]
+    };
+    const [ac, acDeep, acSoft] = themes[p.accent] || themes["海蓝（原版）"];
+    const density = p.density || "标准";
+    const rp = density === "紧凑" ? "clamp(7px,1.1vw,12px)" : density === "宽松" ? "clamp(16px,2.6vw,32px)" : null;
+    const brief = p.brief === true;
+    const vars = { display: "contents", "--ac": ac, "--acDeep": acDeep, "--acSoft": acSoft };
+    if (rp) vars["--rp"] = rp;
+    if (brief) { vars["--note"] = "none"; vars["--fb"] = "none"; }
+    const chip = (active) => ({
+      flex: "0 0 auto", cursor: "pointer", whiteSpace: "nowrap",
+      padding: "clamp(5px,0.9vw,8px) clamp(8px,1.5vw,14px)",
+      font: (active ? 700 : 400) + " clamp(11px,2vw,20px)/1.2 'Noto Sans SC', sans-serif",
+      color: active ? "oklch(0.985 0.006 85)" : "oklch(0.42 0.015 60)",
+      background: active ? acDeep : "oklch(0.985 0.006 85)"
+    });
+    return {
+      themeVars: vars,
+      railRef: this.rail,
+      navRef: this.nav,
+      navDays: this.labels.map((label, i) => ({
+        label, style: chip(i === this.state.idx), go: () => this.go(i)
+      })),
+      prev: () => this.go(this.state.idx - 1),
+      next: () => this.go(this.state.idx + 1),
+      onScroll: () => {
+        clearTimeout(this._s);
+        this._s = setTimeout(() => {
+          const r = this.rail.current;
+          if (!r) return;
+          const mid = r.scrollLeft + r.clientWidth / 2;
+          let best = 0, dist = Infinity;
+          this.cards().forEach((c, i) => {
+            const d = Math.abs(c.offsetLeft - r.offsetLeft + c.offsetWidth / 2 - mid);
+            if (d < dist) { dist = d; best = i; }
+          });
+          if (best !== this.state.idx) {
+            this.setState({ idx: best });
+            this.centerChip(best);
+            try { localStorage.setItem(this.storeKey, String(best)); } catch (e) {}
+          }
+        }, 90);
+      },
+      toastStyle: {
+        position: "fixed", left: "50%", bottom: "24px", transform: "translateX(-50%)",
+        background: "oklch(0.25 0.01 60)", color: "oklch(0.985 0.006 85)",
+        font: "400 15px/1 'Noto Sans SC', sans-serif", padding: "12px 20px",
+        pointerEvents: "none", transition: "opacity .18s ease",
+        opacity: this.state.toast ? 1 : 0, zIndex: 50
+      },
+      copyName: (e) => {
+        const text = (e.currentTarget.textContent || "").trim();
+        const done = () => {
+          this.setState({ toast: true });
+          clearTimeout(this._t);
+          this._t = setTimeout(() => this.setState({ toast: false }), 1200);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, done);
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try { document.execCommand("copy"); } catch (err) {}
+          document.body.removeChild(ta); done();
+        }
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
