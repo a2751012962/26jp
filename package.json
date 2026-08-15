@@ -5,7 +5,7 @@
   "description": "包车行程卡 8/17–8/25 —— 静态站点，本地无需构建",
   "scripts": {
     "vendor": "node scripts/copy-vendor.mjs",
-    "build": "node scripts/copy-vendor.mjs",
+    "build": "node scripts/copy-vendor.mjs && node scripts/build-public.mjs",
     "start": "npx http-server -p 8080 -c-1"
   },
   "dependencies": {
