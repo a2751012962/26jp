@@ -1,0 +1,191 @@
+/* ============================================================
+   示例照片页 —— 瀑布流照片墙
+   沿用 style.css 的配色与字体变量；尺寸同样只用一把刻度。
+   ============================================================ */
+
+.photos-body {
+  min-height: 100dvh;
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* ---------- 顶栏 ---------- */
+
+.pbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 20px);
+  padding: clamp(10px, 1.6vw, 16px) var(--pad-x);
+  padding-top: calc(clamp(10px, 1.6vw, 16px) + env(safe-area-inset-top, 0px));
+  background: oklch(0.93 0.008 85 / 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: clamp(13px, 1.6vw, 17px);
+}
+
+.pbar__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  flex: 0 0 auto;
+  padding: 0.55em 0.85em;
+  background: var(--paper);
+  color: oklch(0.35 0.015 60);
+  text-decoration: none;
+  font: 400 1em/1.2 var(--sans);
+  white-space: nowrap;
+}
+.pbar__back:hover { background: oklch(1 0 0); color: var(--ink); }
+.pbar__back .ico { width: 1.05em; height: 1.05em; vertical-align: -0.15em; }
+
+.pbar__id { flex: 1 1 auto; min-width: 0; }
+.pbar__name {
+  margin: 0;
+  font: 700 1.35em/1.25 var(--serif);
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pbar__day {
+  margin-top: 0.2em;
+  font: 400 0.88em/1.3 var(--sans);
+  color: var(--ac);
+  letter-spacing: 0.06em;
+}
+
+.pbar__actions { display: flex; gap: 0.5em; flex: 0 0 auto; }
+
+.pbtn {
+  border: 0;
+  border-radius: 0;
+  padding: 0.6em 0.95em;
+  font: 400 1em/1.2 var(--sans);
+  color: oklch(0.35 0.015 60);
+  background: var(--paper);
+  cursor: pointer;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.pbtn:hover { background: oklch(1 0 0); }
+.pbtn--primary { font-weight: 700; color: var(--paper); background: var(--acDeep); }
+.pbtn--primary:hover { background: var(--ac); }
+.pbtn[disabled] { opacity: 0.5; cursor: default; }
+
+/* ---------- 主体 ---------- */
+
+.pmain {
+  width: min(1400px, 100%);
+  margin: 0 auto;
+  padding: clamp(12px, 2vw, 28px) var(--pad-x) 0;
+}
+
+.pstatus {
+  padding: clamp(28px, 8vw, 72px) 0;
+  text-align: center;
+  font: 400 clamp(13px, 1.6vw, 17px)/1.7 var(--sans);
+  color: var(--muted);
+  white-space: pre-line;
+}
+
+/* ---------- 瀑布流 ----------
+   列宽和列数由 @egjs/grid 按容器实际宽度实时算（ResizeObserver），
+   不写死断点；每个格子先用 aspect-ratio 占位，图片加载时不会跳动。
+   -------------------------------------------------------------- */
+
+.wall { position: relative; width: 100%; }
+
+.shot {
+  display: block;
+  width: 100%;        /* 实际宽度由 MasonryGrid 覆盖 */
+  background: oklch(0.9 0.006 85);
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.shot__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--ar, 3 / 2);   /* 由数据库里的宽高写入，先占位再加载 */
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.shot__img.is-loaded { opacity: 1; }
+
+.shot__cap {
+  padding: 0.55em 0.7em;
+  font: 400 clamp(12px, 1.4vw, 15px)/1.5 var(--sans);
+  color: var(--muted);
+  background: var(--paper);
+}
+
+/* 管理模式：每张图右上角出现删除按钮 */
+.shot { position: relative; }
+.shot__del {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.1em;
+  height: 2.1em;
+  border: 0;
+  font: 700 1.1em/1 var(--sans);
+  color: oklch(0.985 0.006 85);
+  background: oklch(0.3 0.02 25 / 0.75);
+  cursor: pointer;
+}
+.is-managing .shot__del { display: flex; }
+.is-managing .shot { cursor: default; }
+/* 管理模式下点图不放大，免得想删却全屏了 */
+.is-managing .shot > a { pointer-events: none; }
+.shot__del:hover { background: oklch(0.5 0.19 25 / 0.9); }
+
+/* ---------- 上传进度 ---------- */
+
+.pprogress {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 0;
+  background: var(--ac);
+  transition: width 0.2s ease;
+  z-index: 60;
+}
+
+/* ---------- 登录弹窗 ---------- */
+
+.pdialog {
+  border: 0;
+  padding: clamp(18px, 3vw, 28px);
+  width: min(24rem, calc(100% - 2rem));
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+}
+.pdialog::backdrop { background: oklch(0.25 0.01 60 / 0.45); }
+.pdialog__title { margin: 0 0 0.5em; font: 700 1.15rem/1.3 var(--serif); }
+.pdialog__hint { margin: 0 0 1em; font: 400 0.875rem/1.6 var(--sans); color: var(--muted); }
+.pdialog__row { display: flex; justify-content: flex-end; gap: 0.5em; margin-top: 0.9em; }
+.pdialog__msg { margin-top: 0.8em; font: 400 0.85rem/1.5 var(--sans); color: var(--ac); }
+.pinput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7em 0.8em;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  font: 400 1rem/1.2 var(--sans);
+  background: oklch(1 0 0);
+  color: var(--ink);
+}
+.pinput:focus { outline: 2px solid var(--ac); outline-offset: -1px; }
+
+/* 照片页的提示条要能显示任意文案 */
+.photos-body .toast { white-space: pre-line; text-align: center; }

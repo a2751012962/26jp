@@ -24,10 +24,8 @@
     green: ['oklch(0.5 0.08 165)',  'oklch(0.4 0.07 165)',  'oklch(0.95 0.02 165)', 'oklch(0.32 0.03 165)'],
     rust:  ['oklch(0.53 0.1 40)',   'oklch(0.43 0.09 40)',  'oklch(0.96 0.02 40)',  'oklch(0.34 0.03 40)']
   };
-  var DENSITY = {
-    loose: 'clamp(16px,2.6vw,32px)',
-    tight: 'clamp(7px,1.1vw,12px)'
-  };
+  // 与 --row-pad 同一把尺（都是卡片基准字号的倍数）
+  var DENSITY = { loose: '1.3em', tight: '0.5em' };
 
   var params = new URLSearchParams(location.search);
   var root = document.documentElement;
@@ -57,6 +55,33 @@
     return n;
   }
 
+  var spotNodes = [];   // 所有带 spot slug 的地点名节点
+
+  /* 图标用真实的 <svg> 元素画出来 —— 不用 CSS mask。mask 在分数 em 尺寸下
+     会被光栅化舍入，某些屏幕分辨率上图标会缺一半；SVG 是矢量的，不会。
+     图形来自 Lucide（MIT）。 */
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  var ICONS = {
+    // copy
+    copy: ['M9 9h11a2 2 0 0 1 2 2v11H9z', 'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'],
+    // camera
+    camera: ['M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z',
+             'M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z']
+  };
+
+  function icon(name, cls) {
+    var svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('class', 'ico ico--' + name + (cls ? ' ' + cls : ''));
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    ICONS[name].forEach(function (d) {
+      var path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('d', d);
+      svg.appendChild(path);
+    });
+    return svg;
+  }
+
   function renderRow(b) {
     var row = el('div', 'row' + (b.tall ? ' row--tall' : ''));
 
@@ -65,11 +90,19 @@
 
     var mid = el('div');
     var copyable = b.copy !== false;
-    var place = el('div', 'place' + (copyable ? ' place--copy' : ''), b.place || '');
+    var place = el('div', 'place' + (copyable ? ' place--copy' : ''));
+    // 名字单独包一层，复制时才不会把图标的空白也带进去
+    place.appendChild(el('span', 'place__text', b.place || ''));
     if (copyable) {
       place.setAttribute('role', 'button');
       place.setAttribute('tabindex', '0');
       place.title = '点击复制地点名';
+      place.appendChild(icon('copy'));
+    }
+    // 相机按钮由 applyPhotoIcons() 按"这个地点有没有照片"后补
+    if (b.spot) {
+      place.dataset.spot = b.spot;
+      spotNodes.push(place);
     }
     mid.appendChild(place);
 
@@ -226,6 +259,57 @@
     }, 120);
   });
 
+  /* ---------- 哪些地点有示例照片 ----------
+     清单缓存在 localStorage，所以离线打开时相机图标也在。联网后再拉一次
+     最新的，有变化就就地补上／去掉图标，不重建卡片（重建会丢滚动位置）。 */
+
+  var MANIFEST_KEY = 'trip-photo-spots';
+  var photoSpots = new Set();
+
+  function readManifestCache() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(MANIFEST_KEY) || '[]');
+      if (Array.isArray(raw)) photoSpots = new Set(raw);
+    } catch (e) {}
+  }
+
+  function applyPhotoIcons() {
+    spotNodes.forEach(function (place) {
+      var spot = place.dataset.spot;
+      var link = place.querySelector('.ico-btn');
+      var want = photoSpots.has(spot);
+      if (want && !link) {
+        var name = place.querySelector('.place__text').textContent;
+        link = el('a', 'ico-btn');
+        link.href = 'photos.html?spot=' + encodeURIComponent(spot);
+        link.title = '看「' + name + '」的示例照片';
+        link.setAttribute('aria-label', '看「' + name + '」的示例照片');
+        link.appendChild(icon('camera'));
+        place.appendChild(link);
+      } else if (!want && link) {
+        link.remove();
+      }
+    });
+  }
+
+  function refreshManifest() {
+    var cfg = window.TRIP_CONFIG;
+    if (!cfg || !cfg.url || !cfg.anonKey) return;
+    fetch(cfg.url + '/rest/v1/spot_photos?select=spot', {
+      headers: { apikey: cfg.anonKey, Authorization: 'Bearer ' + cfg.anonKey }
+    })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (rows) {
+        var fresh = new Set(rows.map(function (r) { return r.spot; }));
+        var same = fresh.size === photoSpots.size &&
+          Array.from(fresh).every(function (s) { return photoSpots.has(s); });
+        photoSpots = fresh;
+        try { localStorage.setItem(MANIFEST_KEY, JSON.stringify(Array.from(fresh))); } catch (e) {}
+        if (!same) applyPhotoIcons();
+      })
+      .catch(function () { /* 离线就用缓存，静默 */ });
+  }
+
   /* ---------- 点击复制地点名 ---------- */
 
   var toastTimer;
@@ -254,16 +338,19 @@
   }
 
   function copyFrom(node) {
-    copyText((node.textContent || '').trim());
+    var text = node.querySelector('.place__text');
+    copyText(((text || node).textContent || '').trim());
   }
 
   rail.addEventListener('click', function (e) {
+    if (e.target.closest('.ico-btn')) return;   // 相机按钮只跳转，不复制
     var node = e.target.closest('.place--copy');
     if (node) copyFrom(node);
   });
 
   rail.addEventListener('keydown', function (e) {
     if (e.key !== 'Enter' && e.key !== ' ') return;
+    if (e.target.closest('.ico-btn')) return;
     var node = e.target.closest('.place--copy');
     if (!node) return;
     e.preventDefault();
@@ -293,4 +380,8 @@
     scrollToCard(start, 'auto');
     centerChip(start, 'auto');
   });
+
+  readManifestCache();
+  applyPhotoIcons();
+  refreshManifest();
 })();

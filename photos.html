@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>示例照片</title>
+<meta name="theme-color" content="#eae7e0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231f4e79'/%3E%3Ctext x='50' y='62' font-family='sans-serif' font-size='34' font-weight='700' fill='%23fdfcf9' text-anchor='middle'%3E行%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&amp;family=Noto+Serif+SC:wght@700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/vendor/photoswipe.css">
+<link rel="stylesheet" href="assets/photos.css">
+</head>
+<body class="photos-body">
+
+<header class="pbar">
+  <a id="back" class="pbar__back" href="index.html">
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+    <span>返回行程</span>
+  </a>
+  <div class="pbar__id">
+    <h1 id="spot-name" class="pbar__name">示例照片</h1>
+    <div id="spot-day" class="pbar__day"></div>
+  </div>
+  <div class="pbar__actions">
+    <button id="signin" class="pbtn" type="button" hidden>登录以上传</button>
+    <button id="upload" class="pbtn pbtn--primary" type="button" hidden>上传照片</button>
+    <button id="manage" class="pbtn" type="button" hidden>管理</button>
+  </div>
+</header>
+
+<input id="file" type="file" accept="image/*" multiple hidden>
+
+<main class="pmain">
+  <div id="status" class="pstatus">正在加载…</div>
+  <div id="wall" class="wall" hidden></div>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- 登录：邮箱 magic link，只有你需要用 -->
+<dialog id="auth" class="pdialog">
+  <form id="auth-form" method="dialog">
+    <h2 class="pdialog__title">登录后才能上传</h2>
+    <p class="pdialog__hint">填邮箱，我们发一条登录链接过去，点开就登录了，不用记密码。</p>
+    <input id="auth-email" class="pinput" type="email" inputmode="email" autocomplete="email"
+           placeholder="you@example.com" required>
+    <div class="pdialog__row">
+      <button class="pbtn" value="cancel" type="submit" formnovalidate>取消</button>
+      <button id="auth-send" class="pbtn pbtn--primary" type="button">发送链接</button>
+    </div>
+    <div id="auth-msg" class="pdialog__msg"></div>
+  </form>
+</dialog>
+
+<script src="assets/config.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/vendor/egjs-grid.min.js"></script>
+<script src="assets/vendor/supabase.min.js"></script>
+<script type="module" src="assets/photos.js"></script>
+</body>
+</html>

@@ -38,14 +38,30 @@
   /* 卡片基准字号 —— 全站唯一的缩放来源 */
   --card-fs: clamp(12px, 2.2vw, 24px);
 
-  /* 节奏（--rp 由密度开关覆盖；--note / --fb 由精简版开关覆盖） */
+  /* ---- 卡内模数刻度 ----------------------------------------
+     卡内的每一个尺寸都是 em（= --card-fs 的倍数），所以字号和留白
+     永远按同一个斜率缩放。之前字号走 2.2vw、间距各自走 1.8/2/2.2/4vw，
+     斜率不同，手机上就会出现"这里松那里紧"。刻度只有这几档：
+       0.25 · 0.4 · 0.5 · 0.75 · 1 · 1.5 · 2.3 · 2.6em
+     ---------------------------------------------------------- */
+  --card-pad: 2.6em 2.6em 2.3em;   /* 卡片内边距 */
+  --col-time: 8.4em;               /* 时间列宽：最长的 "16:15‒17:15" 约 7.6em，留一成余量防止折行 */
+  --col-gap: 1em;                  /* 列间距 */
+  --row-pad: 0.8em;                /* 行上下内边距（密度开关会改这个） */
+  --row-pad-tall: 1em;             /* 单行卡片（Day 8/9）的行内边距 */
+  --block-pad: 0.85em 1em;         /* 如果 / 方案 / ⚠ 区块内边距 */
+  --block-gap-first: 1em;          /* 紧跟行程行的第一个区块 */
+  --block-gap-next: 0.4em;         /* 之后彼此相邻的区块 */
+  --step-xs: 0.25em;
+  --step-sm: 0.5em;
+  --step-md: 0.75em;
+  --step-lg: 1.5em;
+
+  /* ---- 卡外版面留白 ----------------------------------------
+     页面四周与卡片之间的空隙跟视口走，不跟字号走。
+     ---------------------------------------------------------- */
   --gap: clamp(18px, 3vw, 48px);
   --pad-x: clamp(10px, 2vw, 24px);
-  --col-time: clamp(102px, 23vw, 190px);
-  --col-gap: clamp(10px, 2vw, 24px);
-  --block-pad: clamp(14px, 2vw, 20px) clamp(14px, 2.2vw, 24px);
-  --block-gap-first: clamp(12px, 2vw, 24px);
-  --block-gap-next: clamp(6px, 1vw, 10px);
 }
 
 * { box-sizing: border-box; }
@@ -153,7 +169,7 @@ body {
   scroll-snap-align: center;
   font-size: var(--card-fs);
   background: var(--paper);
-  padding: clamp(24px, 4vw, 64px) clamp(20px, 4vw, 64px) clamp(26px, 3.6vw, 56px);
+  padding: var(--card-pad);
   box-shadow: 0 2px 24px oklch(0.5 0.02 80 / 0.12);
 }
 
@@ -164,8 +180,8 @@ body {
   justify-content: space-between;
   align-items: flex-end;
   gap: var(--col-gap);
-  padding-bottom: clamp(12px, 2vw, 24px);
-  border-bottom: 3px solid var(--ink);
+  padding-bottom: 1em;
+  border-bottom: max(2px, 0.125em) solid var(--ink);
 }
 
 .eyebrow {
@@ -177,21 +193,21 @@ body {
 .title {
   font: 700 2.4em/1.2 var(--serif);
   color: var(--ink);
-  margin-top: clamp(6px, 1.2vw, 14px);
+  margin-top: var(--step-xs);
 }
 
 .tag {
   font: 400 1.06em/1.35 var(--sans);
   color: var(--label);
-  padding-bottom: 8px;
+  padding-bottom: var(--step-xs);
   text-align: right;
 }
 
 .tag--badge,
 .tag--muted {
   font-weight: 700;
-  padding: clamp(6px, 1.1vw, 12px) clamp(9px, 1.7vw, 18px);
-  margin-bottom: 8px;
+  padding: var(--step-sm) var(--step-md);
+  margin-bottom: var(--step-xs);
   white-space: nowrap;
 }
 .tag--badge { color: var(--paper); background: var(--acDeep); }
@@ -204,10 +220,10 @@ body {
   grid-template-columns: var(--col-time) 1fr auto;
   gap: var(--col-gap);
   align-items: baseline;
-  padding: var(--rp, clamp(11px, 1.8vw, 20px)) 0;
+  padding: var(--rp, var(--row-pad)) 0;
   border-bottom: 1px solid var(--line);
 }
-.row--tall { padding: var(--rp, clamp(14px, 2.2vw, 26px)) 0; }
+.row--tall { padding: var(--rp, var(--row-pad-tall)) 0; }
 
 .time {
   font: 700 1.33em/1.25 var(--sans);
@@ -220,41 +236,63 @@ body {
 .place {
   font: 700 1.33em/1.35 var(--serif);
   color: var(--ink);
-  text-underline-offset: 4px;
+  text-underline-offset: 0.17em;
 }
 .place--copy { cursor: pointer; }
-.place--copy:hover { text-decoration: underline dotted; }
+.place--copy:hover .place__text { text-decoration: underline dotted; }
 .place--copy:focus-visible { outline: 2px solid var(--ac); outline-offset: 3px; }
 
-/* 复制图标（Lucide “copy”，MIT）—— 用 mask 渲染，任意尺寸都清晰 */
-.place--copy::after {
-  content: '';
+/* ---------- 图标 ----------
+   用真实的 <svg> 元素，不用 ::after + mask。mask 在分数 em 尺寸下会被
+   光栅化舍入，某些屏幕分辨率／缩放级别上图标会被裁掉一半；SVG 走矢量
+   渲染，任何 DPR 都完整。
+   -------------------------------------------------------------------- */
+.ico {
   display: inline-block;
-  width: 0.7em;
-  height: 0.7em;
-  flex: 0 0 auto;
-  margin-left: 0.4em;
-  vertical-align: -0.08em;
-  background: currentColor;
-  opacity: 0.32;
-  -webkit-mask-image: var(--copy-icon);
-  -webkit-mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-image: var(--copy-icon);
-  mask-size: contain;
-  mask-repeat: no-repeat;
-  mask-position: center;
+  width: 0.72em;
+  height: 0.72em;
+  flex: none;
+  vertical-align: -0.1em;
+  overflow: visible;      /* 描边压线也不会被 viewBox 切掉 */
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-:root {
-  --copy-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E");
+/* 复制图标：只是"可点"的提示，跟着地点名走，本身不是按钮 */
+.ico--copy {
+  margin-left: 0.4em;
+  opacity: 0.32;
+}
+
+/* 相机图标：真正的按钮，跳转到该地点的照片页 */
+.ico-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.9em;
+  min-height: 1.9em;
+  margin-left: 0.1em;
+  vertical-align: -0.55em;   /* 热区变大，但视觉重心仍贴着文字基线 */
+  color: var(--ac);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ico-btn:hover { color: var(--acDeep); }
+.ico-btn:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; }
+.ico-btn .ico {
+  width: 0.82em;
+  height: 0.82em;
+  vertical-align: middle;
+  opacity: 0.85;
 }
 
 .note {
   font: 400 1em/1.55 var(--sans);
   color: var(--muted);
-  margin-top: 6px;
+  margin-top: var(--step-xs);
   display: var(--note, block);
 }
 /* 红色提示属于硬约束，精简版也要保留 */
@@ -284,7 +322,7 @@ body {
 
 /* 紧跟在行程行之后的第一块留大间距，之后的块彼此贴近 */
 .row + .fallback { margin-top: var(--block-gap-first); }
-.row + .plan { margin-top: clamp(10px, 1.6vw, 20px); }
+.row + .plan { margin-top: var(--block-gap-first); }
 
 .fallback__label { font: 700 1.06em/1.4 var(--sans); color: var(--label); }
 .fallback__text  { font: 400 1em/1.6 var(--sans); color: var(--body); }
@@ -299,10 +337,10 @@ body {
 
 .warn {
   display: flex;
-  gap: clamp(10px, 1.6vw, 16px);
+  gap: var(--step-md);
   background: var(--warn-bg);
   padding: var(--block-pad);
-  margin-top: clamp(10px, 1.6vw, 20px);
+  margin-top: var(--block-gap-first);
 }
 .warn__mark { font: 700 1.06em/1.4 var(--sans); color: var(--warn-mark); }
 .warn__text { font: 400 1em/1.6 var(--sans); color: var(--warn-ink); }
@@ -312,8 +350,8 @@ body {
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(10px, 2.4vw, 32px);
-  margin-top: clamp(18px, 2.8vw, 36px);
+  gap: var(--step-xs) 1.33em;
+  margin-top: var(--step-lg);
   font: 400 1em/1.4 var(--sans);
   color: oklch(0.6 0.02 60);
 }
@@ -323,16 +361,16 @@ body {
 /* ---------- 住宿一览（Day 9） ---------- */
 
 .lodging {
-  margin-top: clamp(18px, 2.8vw, 36px);
-  padding-top: clamp(14px, 2.2vw, 28px);
+  margin-top: var(--step-lg);
+  padding-top: 1.15em;
   border-top: 1px solid var(--line);
 }
 .lodging__title { font: 700 1.25em/1.35 var(--serif); color: var(--ink); }
 .lodging__row {
   display: grid;
-  grid-template-columns: clamp(96px, 21vw, 220px) 1fr clamp(80px, 18vw, 240px);
-  gap: clamp(8px, 1.6vw, 20px);
-  padding: clamp(10px, 1.5vw, 16px) 0;
+  grid-template-columns: 9em 1fr 10em;
+  gap: var(--step-md);
+  padding: 0.65em 0;
   font: 400 1em/1.5 var(--sans);
   color: oklch(0.35 0.015 60);
   border-bottom: 1px solid var(--line-soft);
@@ -340,7 +378,7 @@ body {
 .lodging__row:last-of-type { border-bottom: 0; }
 .lodging__area { color: oklch(0.55 0.02 60); }
 .lodging__foot {
-  margin-top: 24px;
+  margin-top: 1em;
   font: 400 1em/1.7 var(--sans);
   color: oklch(0.45 0.02 60);
 }
