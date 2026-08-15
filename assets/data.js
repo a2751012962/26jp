@@ -69,7 +69,7 @@ window.TRIP = {
         { t: 'row', spot: 'ohmuro-luncheonette', time: '12:30‒13:30', place: 'Ohmuro Luncheonette 午餐', dur: '▶ 20分' },
         { t: 'row', spot: 'jogasaki-kadowaki', time: '13:50‒14:50', place: '城ヶ崎海岸·門脇吊橋', note: '停车场步行5〜10分，吊橋＋灯台一带约30〜60分', dur: '▶ 30分' },
         { t: 'row', spot: 'kazumura', time: '15:20‒15:50', place: 'Kazumura（猪排饭）', dur: '▶ 10分' },
-        { t: 'row', spot: 'inatoriso-checkin', time: '16:10', place: '稲取荘 入住', note: '当晚泡温泉，时间充裕' },
+        { t: 'row', spot: 'inatoriso', time: '16:10', place: '稲取荘 入住', note: '当晚泡温泉，时间充裕' },
         { t: 'fallback', text: '山顶有薄雾 → 仍照常09:00上山，在山顶等雾散（上午多会散）；不要为了等雾改到中午，那时排队最长' },
         { t: 'fallback', text: '确定整天大雾∕强风停运 → 09:00‒11:00 先动物公园，午餐11:10‒12:10，13:00 再看情况上大室山（预留排队30分）' },
         { t: 'fallback', text: '动物公园只逛1小时 → 可加回 小室山（约40分）' },
@@ -92,7 +92,7 @@ window.TRIP = {
         { t: 'row', spot: 'yumigahama', time: '15:30‒15:50', place: '弓ヶ浜', dur: '▶ 15分' },
         { t: 'row', spot: 'irozaki-ocean-park', time: '16:05‒17:00', kind: 'fixed', place: '石廊崎オーシャンパーク', note: '营业8:30‒17:00，务必16:15前入园；停车场到岬角单程约10分', noteWarn: true, dur: '▶ 5分' },
         { t: 'row', spot: 'yusuge-park', time: '17:05‒18:45', place: 'ユウスゲ公園·愛逢岬', note: '距石廊崎仅0.7km；旁边 SOUTHPOINT 咖啡可等日落，日落约18:25', dur: '▶ 70分' },
-        { t: 'row', spot: 'inatoriso-return', time: '20:00', place: '回稲取荘' },
+        { t: 'row', spot: 'inatoriso', time: '20:00', place: '回稲取荘' },
         { t: 'fallback', text: '8/19 晚上没泡成酒店温泉 → 改 08:30 出发，全天提前1小时，石廊崎 15:05‒16:00，ユウスゲ公園 只停30分（16:05‒16:35，不等日落），17:45 回酒店泡温泉、赶上旅馆晚餐' },
         { t: 'fallback', text: '天气阴看不到日落 → 石廊崎结束后直接返程，18:15 到酒店' }
       ]
@@ -113,7 +113,7 @@ window.TRIP = {
         { t: 'row', spot: 'izu-panorama', time: '13:10‒14:40', place: '伊豆パノラマパーク', note: '缆车往返＋碧テラス，目安60〜120分', dur: '▶ 85分' },
         { t: 'row', spot: 'narukawa-museum', time: '16:10‒17:00', place: '成川美術館', note: '最终入馆16:30', dur: '▶ 5分' },
         { t: 'row', spot: 'hakone-torii', time: '17:10‒17:45', place: '箱根神社 平和の鳥居', note: '拍照，天气好务必今天拍完', dur: '▶ 25分' },
-        { t: 'row', spot: 'suiun-checkin', time: '18:15', place: '翠雲 入住' },
+        { t: 'row', spot: 'suiun', time: '18:15', place: '翠雲 入住' },
         { t: 'fallback', text: 'じゅうろく 排队超过 30 分 → 缩短修善寺停留，パノラマパーク 改 13:40 上山' },
         { t: 'fallback', text: '16:20 后才到元箱根 → 放弃成川美術館，直接去鳥居拍照，17:00‒17:45' },
         { t: 'fallback', text: '当天下雨拍不成 → 鳥居改到 8/23 早上补，8/23 提前到 08:00 出发' }
@@ -126,7 +126,7 @@ window.TRIP = {
       title: '箱根 一日',
       tag: { kind: 'plain', text: '住同一酒店·行李留房' },
       blocks: [
-        { t: 'row', spot: 'suiun-gora', time: '09:00 出发', kind: 'go', place: '翠雲（強羅）', note: '先上山，下午再下山看美术馆', dur: '▶ 10分' },
+        { t: 'row', spot: 'suiun', time: '09:00 出发', kind: 'go', place: '翠雲（強羅）', note: '先上山，下午再下山看美术馆', dur: '▶ 10分' },
         { t: 'row', spot: 'sounzan-ropeway', time: '09:20', place: '早雲山 换乘缆车上大涌谷' },
         { t: 'row', spot: 'owakudani', time: '09:45‒11:45', place: '大涌谷', note: '山上吃午饭，11:00 前入座避开高峰', dur: '▶ 30分' },
         { t: 'row', spot: 'lalique-museum', time: '12:15 到馆', kind: 'fixed', place: '箱根ラリック美術館', note: '一到就取下午茶整理券（东方快车餐车），先确认剩余场次', noteWarn: true },
@@ -144,7 +144,7 @@ window.TRIP = {
       title: '箱根 → 东京',
       tag: { kind: 'badge', text: '★ 退房·行李随车' },
       blocks: [
-        { t: 'row', spot: 'suiun-checkout', time: '09:00 出发', kind: 'go', place: '翠雲 退房', note: '鳥居已于8/21晚拍完，早上可晚起', dur: '▶ 25分' },
+        { t: 'row', spot: 'suiun', time: '09:00 出发', kind: 'go', place: '翠雲 退房', note: '鳥居已于8/21晚拍完，早上可晚起', dur: '▶ 25分' },
         { t: 'row', spot: 'komagatake-ropeway', time: '09:30‒11:00', place: '箱根園 駒ヶ岳ロープウェー', note: '上行末班16:30，每20分一班', dur: '▶ 25分' },
         { t: 'row', spot: 'morimeshi', time: '11:45‒12:45', place: '森メシ 午餐', dur: '▶ 10分' },
         { t: 'row', spot: 'open-air-museum', time: '13:00‒14:15', place: '彫刻の森美術館', note: '官方主环线60〜90分，本次只走主环线', dur: '▶ 15分' },

@@ -1,6 +1,9 @@
 # vendor —— 第三方库（未改动，直接取自 npm dist）
 
-手工同步，没有构建步骤。要升级就重新 `npm pack` 再覆盖。
+由 `scripts/copy-vendor.mjs` 从 `package.json` 钉死的版本生成（`npm run vendor`），
+Vercel 构建时也会重新生成一次，所以**不要手工改这里的文件** —— 改了也会在
+下一次部署时被脚本覆盖。升级：改 `package.json` 版本号 → `npm install &&
+npm run vendor` → 连同本目录的变化一起提交。
 
 | 文件 | 包 | 版本 | 许可 |
 | --- | --- | --- | --- |

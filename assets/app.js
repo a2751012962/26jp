@@ -82,7 +82,7 @@
     return svg;
   }
 
-  function renderRow(b) {
+  function renderRow(b, dayLabel) {
     var row = el('div', 'row' + (b.tall ? ' row--tall' : ''));
 
     var time = el('div', 'time' + (b.kind ? ' time--' + b.kind : ''), b.time || '');
@@ -99,9 +99,12 @@
       place.title = '点击复制地点名';
       place.appendChild(icon('copy'));
     }
-    // 相机按钮由 applyPhotoIcons() 按"这个地点有没有照片"后补
+    // 相机按钮由 applyPhotoIcons() 按"这个地点有没有照片"后补。
+    // 日期也记下来：同一个 slug 会出现在多天（七里ヶ浜、稲取荘），
+    // 照片页靠它显示正确的那天、返回时回到正确的卡。
     if (b.spot) {
       place.dataset.spot = b.spot;
+      place.dataset.day = dayLabel;
       spotNodes.push(place);
     }
     mid.appendChild(place);
@@ -164,7 +167,7 @@
     card.appendChild(head);
 
     day.blocks.forEach(function (b) {
-      if (b.t === 'row') card.appendChild(renderRow(b));
+      if (b.t === 'row') card.appendChild(renderRow(b, day.label));
       else if (b.t === 'fallback') card.appendChild(renderPair('fallback', '如果', b.text));
       else if (b.t === 'plan') card.appendChild(renderPair('plan', b.label, b.text));
       else if (b.t === 'warn') card.appendChild(renderPair('warn', '⚠', b.text));
@@ -263,8 +266,25 @@
      清单缓存在 localStorage，所以离线打开时相机图标也在。联网后再拉一次
      最新的，有变化就就地补上／去掉图标，不重建卡片（重建会丢滚动位置）。 */
 
-  var MANIFEST_KEY = 'trip-photo-spots';
+  var MANIFEST_KEY = (window.TRIP_CONFIG && window.TRIP_CONFIG.manifestKey) || 'trip-photo-spots';
   var photoSpots = new Set();
+
+  /* 摄影师模式：所有带 slug 的地点都显示相机入口（没照片的是半透明空心），
+     否则第一张照片没有地方可传。两种方式进入：
+       · 这台设备在照片页登录过 —— supabase-js 会把会话存在
+         localStorage 的 sb-…-auth-token 键下，读键名即可判断，不用引库；
+       · 网址加 ?edit=1（换设备/会话过期时的兜底）。
+     其他人始终只看到有照片的地点，卡片保持干净。 */
+  function isEditor() {
+    if (params.get('edit') === '1') return true;
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        if (/^sb-.+-auth-token$/.test(localStorage.key(i))) return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+  var editor = isEditor();
 
   function readManifestCache() {
     try {
@@ -277,11 +297,13 @@
     spotNodes.forEach(function (place) {
       var spot = place.dataset.spot;
       var link = place.querySelector('.ico-btn');
-      var want = photoSpots.has(spot);
+      var has = photoSpots.has(spot);
+      var want = has || editor;
       if (want && !link) {
         var name = place.querySelector('.place__text').textContent;
         link = el('a', 'ico-btn');
-        link.href = 'photos.html?spot=' + encodeURIComponent(spot);
+        link.href = 'photos.html?spot=' + encodeURIComponent(spot) +
+                    '&day=' + encodeURIComponent(place.dataset.day || '');
         link.title = '看「' + name + '」的示例照片';
         link.setAttribute('aria-label', '看「' + name + '」的示例照片');
         link.appendChild(icon('camera'));
@@ -289,13 +311,15 @@
       } else if (!want && link) {
         link.remove();
       }
+      if (link && !link.isConnected) link = null;
+      if (link) link.classList.toggle('ico-btn--empty', !has);
     });
   }
 
   function refreshManifest() {
     var cfg = window.TRIP_CONFIG;
     if (!cfg || !cfg.url || !cfg.anonKey) return;
-    fetch(cfg.url + '/rest/v1/spot_photos?select=spot', {
+    fetch(cfg.url + '/rest/v1/' + (cfg.table || 'spot_photos') + '?select=spot', {
       headers: { apikey: cfg.anonKey, Authorization: 'Bearer ' + cfg.anonKey }
     })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
@@ -360,12 +384,15 @@
   /* ---------- 打开时定位到哪一天 ---------- */
 
   function initialIndex() {
-    var wanted = params.get('day');
+    var wanted = (params.get('day') || '').trim();
     if (wanted) {
       var byLabel = days.findIndex(function (d) { return d.label === wanted; });
       if (byLabel >= 0) return byLabel;
-      var n = parseInt(wanted, 10);
-      if (n >= 1 && n <= days.length) return n - 1;
+      // 纯数字才当第 n 天用：parseInt('8/26') 会得到 8，悄悄开到错的那天
+      if (/^\d+$/.test(wanted)) {
+        var n = parseInt(wanted, 10);
+        if (n >= 1 && n <= days.length) return n - 1;
+      }
     }
     try {
       var saved = parseInt(localStorage.getItem(TRIP.storeKey) || '0', 10);

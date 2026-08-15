@@ -289,6 +289,9 @@ body {
   opacity: 0.85;
 }
 
+/* 摄影师模式下"还没有照片"的地点：入口在，但压暗，一眼能分出有无 */
+.ico-btn--empty .ico { opacity: 0.28; }
+
 .note {
   font: 400 1em/1.55 var(--sans);
   color: var(--muted);
@@ -342,7 +345,7 @@ body {
   padding: var(--block-pad);
   margin-top: var(--block-gap-first);
 }
-.warn__mark { font: 700 1.06em/1.4 var(--sans); color: var(--warn-mark); }
+.warn__label { font: 700 1.06em/1.4 var(--sans); color: var(--warn-mark); }
 .warn__text { font: 400 1em/1.6 var(--sans); color: var(--warn-ink); }
 
 /* ---------- 图例（Day 1） ---------- */

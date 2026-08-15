@@ -18,9 +18,16 @@
 给某个地点存几张构图参考，到现场照着拍。
 
 - **看**：地点名后的相机图标 → `photos.html?spot=<slug>`。谁都能看，把链接发给司机或同行的人就行。
+  相机图标只在该地点**已有照片**时出现，卡片保持干净。
+- **传第一张（摄影师入口）**：在照片页登录过的设备上，行程页会给**所有**地点显示相机入口
+  （还没照片的是半透明的），点进去就能传。没登录过的设备用 `index.html?edit=1` 强制显示。
+- **批量传**：`upload.html` 是专门的上传页 —— 选地点（按天分组）→ 多选或拖拽
+  → 3 张并行上传，每张一行进度。照片页登录后右上角也有「批量上传」入口。
 - **传**：右上角「登录以上传」，填邮箱收一条登录链接，点开就登录了（不用记密码）。之后「上传照片」可一次选多张。
 - **删**：登录后点「管理」，每张图右上角出现 ×。
-- 上传前浏览器会自动把照片压到最长边 2560px / JPEG q0.85（原图 10MB+ → 约 400KB），并读出宽高存进数据库，这样照片墙在加载时不会跳动。
+- 上传前浏览器把照片压到最长边 4096px / JPEG q0.92（原图 10MB+ → 约 1‒2MB，构图细节都在），
+  并读出宽高存进数据库，这样照片墙在加载时不会跳动。上传页里也可选**原图直传**
+  （JPEG/PNG/WebP 不重新编码；HEIC 仍会转成 JPEG，否则安卓/电脑上显示不了）。
 - 照片墙用 [@egjs/grid](https://github.com/naver/egjs-grid) 的 MasonryGrid：列数和列宽按容器实际宽度实时算（ResizeObserver），没有写死的断点，转屏立刻重排。点开是 [PhotoSwipe](https://github.com/dimsemenov/PhotoSwipe) 全屏，可捏合缩放。
 - 后端是 Supabase（项目 `26jp-trip-photos`，东京区）。权限由 RLS 把关：**任何人可读，只有登录的人能传/删**。`assets/config.js` 里的 publishable key 本来就是给浏览器用的，可以公开提交；service_role key 绝对不要放进去。
 
@@ -43,6 +50,7 @@
 | `density` | `normal`（默认）· `loose` · `tight` | 行距：标准 / 宽松 / 紧凑 |
 | `brief` | `1` | 精简版：隐藏灰色备注与「如果」备用方案，只留时间＋地点 |
 | `day` | `8/20` 或 `4` | 直接打开某一天（优先于「记住上次」） |
+| `edit` | `1` | 摄影师模式：所有地点显示相机入口（用于上传第一张照片） |
 
 例：`index.html?brief=1&density=tight&day=8/22`
 
@@ -65,14 +73,19 @@
 ```
 index.html          行程卡（零依赖，双击就能离线打开）
 photos.html         某个地点的示例照片墙
+upload.html         批量上传页（选地点 → 多选/拖拽 → 并行上传）
 assets/
   style.css         行程卡样式（统一 em 刻度）
-  photos.css        照片页样式
+  photos.css        照片页 + 上传页样式
   data.js           行程内容 ← 改这里
   app.js            行程卡渲染与交互
+  photo-core.js     照片功能共用：Supabase 客户端/压缩/清单/地点清单
   photos.js         照片页：加载／瀑布流／全屏／上传／删除
+  upload.js         上传页：队列／并行／原图直传
   config.js         Supabase 连接信息
-  vendor/           @egjs/grid、PhotoSwipe、supabase-js（取自 npm dist，未改动）
+  vendor/           @egjs/grid、PhotoSwipe、supabase-js（由 scripts/copy-vendor.mjs 生成）
+scripts/            Vercel 构建脚本（取 vendor、组装 public/）
+package.json        钉死三个前端库的版本；npm run build 出 public/
 project/            Claude Design 交付的设计稿原件与 9 张导出图片
 chats/              设计过程的对话记录
 ```
@@ -81,4 +94,13 @@ chats/              设计过程的对话记录
 
 ## 部署
 
-静态站点，根目录直接发布即可，无需构建命令。Vercel 导入仓库后用默认设置就能跑。
+Vercel 导入仓库后用默认设置即可：构建命令走 `npm run build`
+（`scripts/copy-vendor.mjs` 按 `package.json` 钉死的版本重取 vendor，
+`scripts/build-public.mjs` 把 `index.html`、`photos.html`、`assets/`
+组装进 `public/` 输出目录）。`project/`、`chats/` 等工作文件**不会**上线。
+
+本地开发不需要构建 —— 双击 `index.html` 就能打开行程卡（照片功能需要
+起个本地服务器，例如 `npm start`）。
+
+⚠ 不要在 Vercel 后台清掉 Build Command：`public/` 不在 git 里，
+没有构建就没有产物，部署会报 `No Output Directory named "public"`。

@@ -26,6 +26,7 @@
   </div>
   <div class="pbar__actions">
     <button id="signin" class="pbtn" type="button" hidden>登录以上传</button>
+    <a id="bulk" class="pbtn" hidden>批量上传</a>
     <button id="upload" class="pbtn pbtn--primary" type="button" hidden>上传照片</button>
     <button id="manage" class="pbtn" type="button" hidden>管理</button>
   </div>
@@ -48,17 +49,17 @@
     <input id="auth-email" class="pinput" type="email" inputmode="email" autocomplete="email"
            placeholder="you@example.com" required>
     <div class="pdialog__row">
-      <button class="pbtn" value="cancel" type="submit" formnovalidate>取消</button>
-      <button id="auth-send" class="pbtn pbtn--primary" type="button">发送链接</button>
+      <button id="auth-cancel" class="pbtn" type="button">取消</button>
+      <button id="auth-send" class="pbtn pbtn--primary" type="submit">发送链接</button>
     </div>
     <div id="auth-msg" class="pdialog__msg"></div>
   </form>
 </dialog>
 
-<script src="assets/config.js"></script>
-<script src="assets/data.js"></script>
-<script src="assets/vendor/egjs-grid.min.js"></script>
-<script src="assets/vendor/supabase.min.js"></script>
+<script src="assets/config.js" defer></script>
+<script src="assets/data.js" defer></script>
+<script src="assets/vendor/egjs-grid.min.js" defer></script>
+<script src="assets/vendor/supabase.min.js" defer></script>
 <script type="module" src="assets/photos.js"></script>
 </body>
 </html>

@@ -189,3 +189,73 @@
 
 /* 照片页的提示条要能显示任意文案 */
 .photos-body .toast { white-space: pre-line; text-align: center; }
+
+/* ---------- 批量上传页 ---------- */
+
+/* 类里写了 display:flex 的元素，hidden 属性会被它压过 —— 这里补回来 */
+.photos-body [hidden] { display: none !important; }
+
+.up-panel {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 2vw, 22px);
+  width: min(44rem, 100%);
+  margin: 0 auto;
+  font: 400 clamp(14px, 1.6vw, 16px)/1.6 var(--sans);
+  color: var(--ink);
+}
+
+.up-field { display: flex; flex-direction: column; gap: 0.45em; border: 0; padding: 0; margin: 0; }
+.up-label { font-weight: 700; color: var(--label); font-size: 0.85em; letter-spacing: 0.05em; }
+
+select.pinput { appearance: auto; -webkit-appearance: auto; }
+
+.up-quality label { display: block; padding: 0.15em 0; cursor: pointer; }
+.up-quality small { color: var(--muted); margin-left: 0.35em; }
+
+.up-drop {
+  padding: clamp(26px, 5vw, 44px) 1em;
+  text-align: center;
+  color: var(--muted);
+  background: var(--paper);
+  border: 2px dashed var(--line);
+  cursor: pointer;
+}
+.up-drop strong { color: var(--acDeep); }
+.up-drop:hover, .up-drop.is-over { border-color: var(--ac); background: var(--acSoft); }
+.up-drop:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; }
+
+.up-queue {
+  list-style: none;
+  margin: clamp(14px, 2vw, 22px) auto 0;
+  padding: 0;
+  width: min(44rem, 100%);
+  font: 400 clamp(13px, 1.5vw, 15px)/1.5 var(--sans);
+}
+.up-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 0.5em 0.7em;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line-soft);
+}
+.up-item__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--body); }
+.up-item__state { flex: none; color: var(--muted); font-variant-numeric: tabular-nums; }
+.up-item--busy .up-item__state { color: var(--ac); }
+.up-item--ok .up-item__state { color: oklch(0.5 0.08 165); }
+.up-item--err .up-item__state { color: var(--red); }
+
+.up-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  width: min(44rem, 100%);
+  margin: clamp(14px, 2vw, 22px) auto 0;
+  padding: 0.7em 0.7em;
+  background: var(--acSoft);
+  font: 400 clamp(13px, 1.5vw, 15px)/1.5 var(--sans);
+  color: var(--acInk);
+}
+.up-summary .pbtn { text-decoration: none; }

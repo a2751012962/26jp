@@ -10,5 +10,7 @@ window.TRIP_CONFIG = {
   url: 'https://zrjbguzyovilwrceuulm.supabase.co',
   anonKey: 'sb_publishable_qyF_mNrlQHj8tFvzFZHT1A_CHE1m0wp',
   bucket: 'spot-photos',
-  table: 'spot_photos'
+  table: 'spot_photos',
+  /* 行程页与照片页共用的"哪些地点有照片"缓存键（localStorage） */
+  manifestKey: 'trip-photo-spots'
 };

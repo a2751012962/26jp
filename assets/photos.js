@@ -4,14 +4,12 @@
  *     （内部走 ResizeObserver），不写死断点数字。
  *   · 每格先按数据库里的宽高设 aspect-ratio 占位，图片加载时不会跳动。
  *   · 点开是 PhotoSwipe 全屏，可捏合缩放、左右滑。
- *   · 上传前在浏览器里压到最长边 2560px / JPEG q0.85，顺手读出宽高。
+ *   · 上传走 photo-core.js：压到最长边 4096px / JPEG q0.92（约 1‒2MB）。
+ *     批量传、原图直传在专门的 upload.html。
  *   · 谁都能看；只有登录的人（你）看得到上传和管理按钮。
  */
 import PhotoSwipeLightbox from './vendor/photoswipe-lightbox.esm.min.js';
-
-const CFG = window.TRIP_CONFIG;
-const MAX_EDGE = 2560;
-const JPEG_Q = 0.85;
+import { CFG, sb, publicUrl, uploadOne, bumpManifest } from './photo-core.js';
 
 const $ = (id) => document.getElementById(id);
 const wall = $('wall');
@@ -19,18 +17,26 @@ const statusEl = $('status');
 
 /* ---------- 这个 slug 是哪个地点 ---------- */
 
-const spot = new URLSearchParams(location.search).get('spot') || '';
+const params = new URLSearchParams(location.search);
+const spot = params.get('spot') || '';
+const fromDay = params.get('day');
 
-function findSpot(slug) {
+/* 同一个 slug 会出现在多天（七里ヶ浜、稲取荘 —— 共用照片是故意的），
+   所以优先匹配网址里带的 ?day=，抬头和返回键才是点进来的那一天。 */
+function findSpot(slug, dayLabel) {
+  let first = null;
   for (const day of window.TRIP.days) {
     for (const b of day.blocks) {
-      if (b.t === 'row' && b.spot === slug) return { day, row: b };
+      if (b.t === 'row' && b.spot === slug) {
+        if (dayLabel && day.label === dayLabel) return { day, row: b };
+        first = first || { day, row: b };
+      }
     }
   }
-  return null;
+  return first;
 }
 
-const found = findSpot(spot);
+const found = findSpot(spot, fromDay);
 if (found) {
   document.title = found.row.place + ' · 示例照片';
   $('spot-name').textContent = found.row.place;
@@ -39,22 +45,16 @@ if (found) {
   $('back').href = 'index.html?day=' + encodeURIComponent(found.day.label);
 }
 
-// 有历史记录就直接后退，滚动位置由浏览器自己还原，比重新加载更准
+// 从行程页点进来的就直接后退（滚动位置由浏览器还原，比重新加载更准）；
+// 从聊天软件/搜索链接进来的，referrer 是外站，后退会跳出本站 —— 走 href。
 $('back').addEventListener('click', (e) => {
-  if (document.referrer && history.length > 1) {
+  let sameSite = false;
+  try { sameSite = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch (err) {}
+  if (sameSite && history.length > 1) {
     e.preventDefault();
     history.back();
   }
 });
-
-/* ---------- Supabase ---------- */
-
-const sb = (CFG && CFG.url && window.supabase)
-  ? window.supabase.createClient(CFG.url, CFG.anonKey)
-  : null;
-
-const publicUrl = (path) =>
-  `${CFG.url}/storage/v1/object/public/${CFG.bucket}/${path}`;
 
 /* ---------- 提示条 ---------- */
 
@@ -193,33 +193,7 @@ async function load() {
   renderWall();
 }
 
-/* ---------- 上传：先在浏览器里压缩 ---------- */
-
-function loadImage(file) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('读不出这张图')); };
-    img.src = url;
-  });
-}
-
-async function shrink(file) {
-  const img = await loadImage(file);
-  const scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
-  const w = Math.round(img.naturalWidth * scale);
-  const h = Math.round(img.naturalHeight * scale);
-
-  const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
-  canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-
-  const blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', JPEG_Q));
-  if (!blob) throw new Error('压缩失败');
-  return { blob, width: w, height: h };
-}
+/* ---------- 上传（压缩与写库在 photo-core.js） ---------- */
 
 function progressBar() {
   const bar = document.createElement('div');
@@ -233,33 +207,26 @@ function progressBar() {
 
 async function uploadFiles(files) {
   const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
-  if (!list.length) return;
+  if (!list.length) {
+    // 某些安卓文件管理器把 HEIC/相机拷出来的文件报成 octet-stream，
+    // 静默返回会让人以为按钮坏了
+    if (files.length) toast('选中的文件浏览器没认出是图片，试试从「相册」里选', 3200);
+    return;
+  }
 
   const bar = progressBar();
   const btn = $('upload');
   btn.disabled = true;
   let ok = 0;
 
+  // 会话在本地，读一次就够，别在循环里每张图都问一遍服务器
+  const { data: sess } = await sb.auth.getSession();
+  const uid = sess?.session?.user?.id ?? null;
+
   for (let i = 0; i < list.length; i++) {
     bar.set(i / list.length);
     try {
-      const { blob, width, height } = await shrink(list[i]);
-      const name = `${spot}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
-
-      const up = await sb.storage.from(CFG.bucket)
-        .upload(name, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
-      if (up.error) throw up.error;
-
-      const { data: sess } = await sb.auth.getUser();
-      const row = await sb.from(CFG.table).insert({
-        spot, path: name, width, height,
-        sort: photos.length + ok,
-        created_by: sess?.user?.id ?? null
-      });
-      if (row.error) {
-        await sb.storage.from(CFG.bucket).remove([name]);   // 别留孤儿文件
-        throw row.error;
-      }
+      await uploadOne(spot, list[i], { sort: photos.length + ok, uid });
       ok++;
     } catch (err) {
       toast('第 ' + (i + 1) + ' 张上传失败：' + (err.message || err), 3200);
@@ -270,7 +237,7 @@ async function uploadFiles(files) {
   btn.disabled = false;
   if (ok) {
     toast(`已上传 ${ok} 张`);
-    bumpManifest();
+    bumpManifest(spot);
     await load();
   }
 }
@@ -279,21 +246,11 @@ async function removePhoto(p) {
   if (!confirm('删除这张照片？')) return;
   const row = await sb.from(CFG.table).delete().eq('id', p.id);
   if (row.error) { toast('删除失败：' + row.error.message, 3000); return; }
-  await sb.storage.from(CFG.bucket).remove([p.path]);
-  toast('已删除');
+  const gone = await sb.storage.from(CFG.bucket).remove([p.path]);
+  if (gone.error) toast('照片已删掉，但存储文件没清干净：' + gone.error.message, 3200);
+  else toast('已删除');
   await load();
-  if (!photos.length) bumpManifest(true);
-}
-
-/* 行程页靠这份缓存决定哪些地点显示相机图标；本页改动后同步一下，
-   回去时立刻是对的，不用等下一次联网刷新。 */
-function bumpManifest(remove = false) {
-  try {
-    const key = 'trip-photo-spots';
-    const set = new Set(JSON.parse(localStorage.getItem(key) || '[]'));
-    remove ? set.delete(spot) : set.add(spot);
-    localStorage.setItem(key, JSON.stringify(Array.from(set)));
-  } catch (e) {}
+  if (!photos.length) bumpManifest(spot, true);
 }
 
 /* ---------- 登录（邮箱 magic link） ---------- */
@@ -304,6 +261,8 @@ function paintAuth() {
   $('upload').hidden = !signedIn;
   $('manage').hidden = !signedIn;
   $('signin').hidden = signedIn;
+  $('bulk').hidden = !signedIn;
+  $('bulk').href = 'upload.html' + (spot ? '?spot=' + encodeURIComponent(spot) : '');
 }
 
 async function initAuth() {
@@ -319,8 +278,12 @@ async function initAuth() {
 }
 
 $('signin').addEventListener('click', () => $('auth').showModal());
+$('auth-cancel').addEventListener('click', () => $('auth').close());
 
-$('auth-send').addEventListener('click', async () => {
+// 用 submit 事件：手机键盘上按「前往/Enter」走的是表单提交，
+// 必须让它落在发送逻辑上，而不是把弹窗关掉
+$('auth-form').addEventListener('submit', async (e) => {
+  e.preventDefault();   // method="dialog" 的默认提交会直接关弹窗
   const email = $('auth-email').value.trim();
   if (!email) return;
   $('auth-msg').textContent = '发送中…';
