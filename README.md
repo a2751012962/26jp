@@ -1,25 +1,63 @@
-# CODING AGENTS: READ THIS FIRST
+# 包车行程卡 · 8/17–8/25
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+司机版每日行程卡。9 张卡片横向滑动，顶部日期条跟随，点地点名即复制。
+纯静态页面，无构建步骤 —— 双击 `index.html` 就能离线打开，也可以直接部署到 Vercel。
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+## 功能
 
-## What you should do — IMPORTANT
+- **横向滑动卡片** —— 一天一张，scroll-snap 对齐；左右箭头或点日期条都能跳转。
+- **日期条自动跟随** —— 选中的日期会自动滚到可见位置，8/25 不会藏在屏幕外。
+- **记住上次看的那一天** —— 存在 `localStorage`（键名 `trip-card-idx-0817`），下次打开直接回到那张卡。
+- **点击复制地点名** —— 地点名后有复制图标，点一下复制，底部弹出「已复制地点名」。
+- **一套字号刻度** —— 每张卡片只有一个基准字号 `clamp(12px, 2.2vw, 24px)`，卡内其余尺寸全是它的倍数（正文 1em、时间/地点 1.33em、标题 2.4em），所以手机和桌面的比例完全一致。
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+## 颜色约定
 
-**Read `project/每日行程卡.dc.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+| 颜色 | 含义 |
+| --- | --- |
+| 蓝（主色） | 出发时间 |
+| 红 | 已预约·不能迟到（这类提示在精简版里也会保留） |
+| 灰底「如果」 | 备用方案 |
+| 浅红「⚠」 | 警示 |
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+## 网址参数
 
-## About the design files
+默认视图就是设计稿的样子。需要临时换个样式时，在网址后面加参数：
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+| 参数 | 取值 | 作用 |
+| --- | --- | --- |
+| `accent` | `blue`（默认）· `green` · `rust` | 主色：海蓝 / 墨绿 / 赤茶 |
+| `density` | `normal`（默认）· `loose` · `tight` | 行距：标准 / 宽松 / 紧凑 |
+| `brief` | `1` | 精简版：隐藏灰色备注与「如果」备用方案，只留时间＋地点 |
+| `day` | `8/20` 或 `4` | 直接打开某一天（优先于「记住上次」） |
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+例：`index.html?brief=1&density=tight&day=8/22`
 
-## Bundle contents
+## 改行程内容
 
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `日程图片制作` project files (HTML prototypes, assets, components)
+行程文字全在 `assets/data.js` 里，改完刷新即可，不需要动 HTML/CSS。
+每一天是一个对象，`blocks` 按顺序渲染：
+
+```js
+{ t: 'row', time: '09:00 出发', kind: 'go', place: '翠雲（強羅）',
+  note: '先上山，下午再下山看美术馆', dur: '▶ 10分' }
+```
+
+- `kind: 'go'` → 出发时间，显示主色；`kind: 'fixed'` → 已预约，显示红色
+- `noteWarn: true` → 备注用红色，且精简版也不隐藏
+- 其余块：`fallback`（如果）、`plan`（并列方案 A/B）、`warn`（⚠）、`legend`、`lodging`
+
+## 文件
+
+```
+index.html          页面骨架
+assets/style.css    样式
+assets/data.js      行程内容 ← 改这里
+assets/app.js       渲染与交互
+project/            Claude Design 交付的设计稿原件与 9 张导出图片
+chats/              设计过程的对话记录
+```
+
+## 部署
+
+静态站点，根目录直接发布即可，无需构建命令。Vercel 导入仓库后用默认设置就能跑。

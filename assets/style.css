@@ -1,0 +1,369 @@
+/* ============================================================
+   包车行程卡 —— 样式
+   每张卡片只有一个基准字号（--card-fs），卡内所有尺寸都是它的倍数，
+   所以手机与桌面的比例完全一致。
+   ============================================================ */
+
+:root {
+  /* 主色（可由 ?accent= 覆盖） */
+  --ac: oklch(0.55 0.09 245);
+  --acDeep: oklch(0.45 0.09 245);
+  --acSoft: oklch(0.96 0.02 245);
+  --acInk: oklch(0.35 0.03 245);
+
+  /* 中性色 */
+  --bg: oklch(0.93 0.008 85);
+  --paper: oklch(0.985 0.006 85);
+  --ink: oklch(0.25 0.01 60);
+  --body: oklch(0.38 0.015 60);
+  --muted: oklch(0.52 0.02 60);
+  --dim: oklch(0.58 0.02 60);
+  --label: oklch(0.5 0.02 60);
+  --line: oklch(0.9 0.01 80);
+  --line-soft: oklch(0.92 0.008 80);
+  --fill: oklch(0.94 0.004 80);
+
+  /* 警示色 */
+  --red: oklch(0.58 0.13 12);
+  --red-note: oklch(0.52 0.13 12);
+  --warn-bg: oklch(0.95 0.03 25);
+  --warn-mark: oklch(0.5 0.13 25);
+  --warn-ink: oklch(0.42 0.09 25);
+
+  /* 字体 */
+  --sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+          'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --serif: 'Noto Serif SC', 'Songti SC', 'Hiragino Mincho ProN', 'SimSun', serif;
+
+  /* 卡片基准字号 —— 全站唯一的缩放来源 */
+  --card-fs: clamp(12px, 2.2vw, 24px);
+
+  /* 节奏（--rp 由密度开关覆盖；--note / --fb 由精简版开关覆盖） */
+  --gap: clamp(18px, 3vw, 48px);
+  --pad-x: clamp(10px, 2vw, 24px);
+  --col-time: clamp(102px, 23vw, 190px);
+  --col-gap: clamp(10px, 2vw, 24px);
+  --block-pad: clamp(14px, 2vw, 20px) clamp(14px, 2.2vw, 24px);
+  --block-gap-first: clamp(12px, 2vw, 24px);
+  --block-gap-next: clamp(6px, 1vw, 10px);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: var(--sans);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 页面骨架 ---------- */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap);
+  padding: clamp(16px, 3vw, 48px) var(--pad-x);
+}
+
+/* ---------- 顶部日期条 ---------- */
+
+.daybar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.4vw, 14px);
+  width: min(1080px, 100%);
+  padding: clamp(8px, 1.2vw, 12px) clamp(8px, 1.6vw, 14px);
+  background: oklch(0.93 0.008 85 / 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.arrow {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(30px, 5vw, 40px);
+  height: clamp(30px, 5vw, 40px);
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  color: oklch(0.35 0.015 60);
+  background: var(--paper);
+  font: 400 clamp(15px, 2.4vw, 20px)/1 var(--sans);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.arrow:hover { background: oklch(1 0 0); }
+
+.chips {
+  flex: 1 1 auto;
+  display: flex;
+  gap: clamp(4px, 1vw, 8px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+.chips::-webkit-scrollbar { display: none; }
+
+.chip {
+  flex: 0 0 auto;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 0;
+  border-radius: 0;
+  padding: clamp(5px, 0.9vw, 8px) clamp(8px, 1.5vw, 14px);
+  font: 400 clamp(11px, 2vw, 20px)/1.2 var(--sans);
+  color: oklch(0.42 0.015 60);
+  background: var(--paper);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.chip[aria-current='true'] {
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--acDeep);
+}
+
+/* ---------- 卡片横向滑轨 ---------- */
+
+.rail {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap);
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: clamp(10px, 1.6vw, 20px) max(0px, calc((100% - min(1080px, 100%)) / 2));
+}
+.rail::-webkit-scrollbar { display: none; }
+
+.card {
+  flex: 0 0 min(1080px, 100%);
+  scroll-snap-align: center;
+  font-size: var(--card-fs);
+  background: var(--paper);
+  padding: clamp(24px, 4vw, 64px) clamp(20px, 4vw, 64px) clamp(26px, 3.6vw, 56px);
+  box-shadow: 0 2px 24px oklch(0.5 0.02 80 / 0.12);
+}
+
+/* ---------- 卡片抬头 ---------- */
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--col-gap);
+  padding-bottom: clamp(12px, 2vw, 24px);
+  border-bottom: 3px solid var(--ink);
+}
+
+.eyebrow {
+  font: 400 1.06em/1.35 var(--sans);
+  color: var(--ac);
+  letter-spacing: 0.08em;
+}
+
+.title {
+  font: 700 2.4em/1.2 var(--serif);
+  color: var(--ink);
+  margin-top: clamp(6px, 1.2vw, 14px);
+}
+
+.tag {
+  font: 400 1.06em/1.35 var(--sans);
+  color: var(--label);
+  padding-bottom: 8px;
+  text-align: right;
+}
+
+.tag--badge,
+.tag--muted {
+  font-weight: 700;
+  padding: clamp(6px, 1.1vw, 12px) clamp(9px, 1.7vw, 18px);
+  margin-bottom: 8px;
+  white-space: nowrap;
+}
+.tag--badge { color: var(--paper); background: var(--acDeep); }
+.tag--muted { color: oklch(0.35 0.01 60); background: var(--line); }
+
+/* ---------- 行程行 ---------- */
+
+.row {
+  display: grid;
+  grid-template-columns: var(--col-time) 1fr auto;
+  gap: var(--col-gap);
+  align-items: baseline;
+  padding: var(--rp, clamp(11px, 1.8vw, 20px)) 0;
+  border-bottom: 1px solid var(--line);
+}
+.row--tall { padding: var(--rp, clamp(14px, 2.2vw, 26px)) 0; }
+
+.time {
+  font: 700 1.33em/1.25 var(--sans);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.time--go { color: var(--ac); }
+.time--fixed { color: var(--red); }
+
+.place {
+  font: 700 1.33em/1.35 var(--serif);
+  color: var(--ink);
+  text-underline-offset: 4px;
+}
+.place--copy { cursor: pointer; }
+.place--copy:hover { text-decoration: underline dotted; }
+.place--copy:focus-visible { outline: 2px solid var(--ac); outline-offset: 3px; }
+
+/* 复制图标（Lucide “copy”，MIT）—— 用 mask 渲染，任意尺寸都清晰 */
+.place--copy::after {
+  content: '';
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  flex: 0 0 auto;
+  margin-left: 0.4em;
+  vertical-align: -0.08em;
+  background: currentColor;
+  opacity: 0.32;
+  -webkit-mask-image: var(--copy-icon);
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-image: var(--copy-icon);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+:root {
+  --copy-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='9' width='13' height='13' rx='2'/%3E%3Cpath d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/%3E%3C/svg%3E");
+}
+
+.note {
+  font: 400 1em/1.55 var(--sans);
+  color: var(--muted);
+  margin-top: 6px;
+  display: var(--note, block);
+}
+/* 红色提示属于硬约束，精简版也要保留 */
+.note--warn {
+  color: var(--red-note);
+  display: block;
+}
+
+.dur {
+  font: 400 1em/1.3 var(--sans);
+  color: var(--dim);
+  text-align: right;
+}
+
+/* ---------- 备用方案 / 并列方案 / 警示 ---------- */
+
+.fallback,
+.plan {
+  display: grid;
+  grid-template-columns: var(--col-time) 1fr;
+  gap: var(--col-gap);
+  padding: var(--block-pad);
+  margin-top: var(--block-gap-next);
+}
+.fallback { display: var(--fb, grid); background: var(--fill); }
+.plan { background: var(--acSoft); }
+
+/* 紧跟在行程行之后的第一块留大间距，之后的块彼此贴近 */
+.row + .fallback { margin-top: var(--block-gap-first); }
+.row + .plan { margin-top: clamp(10px, 1.6vw, 20px); }
+
+.fallback__label { font: 700 1.06em/1.4 var(--sans); color: var(--label); }
+.fallback__text  { font: 400 1em/1.6 var(--sans); color: var(--body); }
+.plan__label     { font: 700 1.06em/1.4 var(--sans); color: var(--acDeep); }
+.plan__text      { font: 400 1em/1.6 var(--sans); color: var(--acInk); }
+
+/* 方案区块之后接回行程行时补一条分隔线 */
+.plan + .row {
+  margin-top: var(--block-gap-next);
+  border-top: 1px solid var(--line);
+}
+
+.warn {
+  display: flex;
+  gap: clamp(10px, 1.6vw, 16px);
+  background: var(--warn-bg);
+  padding: var(--block-pad);
+  margin-top: clamp(10px, 1.6vw, 20px);
+}
+.warn__mark { font: 700 1.06em/1.4 var(--sans); color: var(--warn-mark); }
+.warn__text { font: 400 1em/1.6 var(--sans); color: var(--warn-ink); }
+
+/* ---------- 图例（Day 1） ---------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(10px, 2.4vw, 32px);
+  margin-top: clamp(18px, 2.8vw, 36px);
+  font: 400 1em/1.4 var(--sans);
+  color: oklch(0.6 0.02 60);
+}
+.legend__go { color: var(--ac); }
+.legend__fixed { color: var(--red); }
+
+/* ---------- 住宿一览（Day 9） ---------- */
+
+.lodging {
+  margin-top: clamp(18px, 2.8vw, 36px);
+  padding-top: clamp(14px, 2.2vw, 28px);
+  border-top: 1px solid var(--line);
+}
+.lodging__title { font: 700 1.25em/1.35 var(--serif); color: var(--ink); }
+.lodging__row {
+  display: grid;
+  grid-template-columns: clamp(96px, 21vw, 220px) 1fr clamp(80px, 18vw, 240px);
+  gap: clamp(8px, 1.6vw, 20px);
+  padding: clamp(10px, 1.5vw, 16px) 0;
+  font: 400 1em/1.5 var(--sans);
+  color: oklch(0.35 0.015 60);
+  border-bottom: 1px solid var(--line-soft);
+}
+.lodging__row:last-of-type { border-bottom: 0; }
+.lodging__area { color: oklch(0.55 0.02 60); }
+.lodging__foot {
+  margin-top: 24px;
+  font: 400 1em/1.7 var(--sans);
+  color: oklch(0.45 0.02 60);
+}
+
+/* ---------- 复制提示 ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--paper);
+  font: 400 15px/1 var(--sans);
+  padding: 12px 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  z-index: 50;
+}
+.toast.is-on { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chips, .rail { scroll-behavior: auto; }
+  .toast { transition: none; }
+}

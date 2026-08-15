@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>包车行程卡 · 8/17–8/25</title>
+<meta name="description" content="司机版每日行程卡：横向滑动看每一天，点地点名即可复制。">
+<meta name="theme-color" content="#eae7e0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231f4e79'/%3E%3Ctext x='50' y='62' font-family='sans-serif' font-size='34' font-weight='700' fill='%23fdfcf9' text-anchor='middle'%3E行%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&amp;family=Noto+Serif+SC:wght@700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="page">
+
+  <nav class="daybar" aria-label="日期">
+    <button id="prev" class="arrow" type="button" title="上一天" aria-label="上一天">‹</button>
+    <div id="chips" class="chips"></div>
+    <button id="next" class="arrow" type="button" title="下一天" aria-label="下一天">›</button>
+  </nav>
+
+  <div id="rail" class="rail" tabindex="-1"></div>
+
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite">已复制地点名</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
