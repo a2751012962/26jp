@@ -1,0 +1,16 @@
+{
+  "name": "26jp-trip-cards",
+  "version": "1.0.0",
+  "private": true,
+  "description": "包车行程卡 8/17–8/25 —— 静态站点，本地无需构建",
+  "scripts": {
+    "vendor": "node scripts/copy-vendor.mjs",
+    "build": "node scripts/copy-vendor.mjs",
+    "start": "npx http-server -p 8080 -c-1"
+  },
+  "dependencies": {
+    "@egjs/grid": "1.18.0",
+    "@supabase/supabase-js": "2.112.3",
+    "photoswipe": "5.4.4"
+  }
+}
