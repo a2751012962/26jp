@@ -23,7 +23,9 @@ window.TRIP = {
       title: '羽田 → 镰仓',
       tag: { kind: 'plain', text: '首日接机' },
       blocks: [
-        { t: 'row', spot: 'haneda-pickup', time: '15:00', kind: 'go', place: '羽田空港 接机', note: '航班14:00到，取完行李上车', dur: '▶ 60分' },
+        { t: 'row', spot: 'haneda-pickup', time: '12:25 落地', kind: 'fixed', place: '羽田空港 T3 接机①', note: 'NH972 · 提前来接第一批（两班都是 T3 落地）', noteWarn: true },
+        { t: 'row', spot: 'haneda-pickup', time: '14:00 落地', place: '羽田空港 T3 接机②', note: 'CZ647 · 取完行李上车' },
+        { t: 'row', time: '15:00 出发', kind: 'go', place: '羽田空港 → 镰仓', dur: '▶ 60分' },
         { t: 'row', spot: 'komachi-dori', time: '16:15‒17:15', place: '镰仓 小町通り', dur: '▶ 20分' },
         { t: 'row', spot: 'shichirigahama', time: '17:35‒17:55', place: '七里ヶ浜', dur: '▶ 就近' },
         { t: 'row', spot: 'bills-shichirigahama', time: '18:00‒19:15', place: 'bills 七里ヶ浜 晚餐', dur: '▶ 15分' },
