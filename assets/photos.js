@@ -9,7 +9,7 @@
  *   · 谁都能看；只有登录的人（你）看得到上传和管理按钮。
  */
 import PhotoSwipeLightbox from './vendor/photoswipe-lightbox.esm.min.js';
-import { CFG, sb, publicUrl, uploadOne, bumpManifest, wireAuthDialog } from './photo-core.js';
+import { CFG, sb, publicUrl, uploadOne, bumpManifest } from './photo-core.js';
 
 const $ = (id) => document.getElementById(id);
 const wall = $('wall');
@@ -186,9 +186,7 @@ async function load() {
   photos = data || [];
   statusEl.hidden = photos.length > 0;
   if (!photos.length) {
-    statusEl.textContent = signedIn
-      ? '这个地点还没有示例照片。\n点右上角「上传照片」加几张构图参考。'
-      : '这个地点还没有示例照片。';
+    statusEl.textContent = '这个地点还没有示例照片。\n点右上角「上传照片」加几张构图参考。';
   }
   renderWall();
 }
@@ -219,14 +217,10 @@ async function uploadFiles(files) {
   btn.disabled = true;
   let ok = 0;
 
-  // 会话在本地，读一次就够，别在循环里每张图都问一遍服务器
-  const { data: sess } = await sb.auth.getSession();
-  const uid = sess?.session?.user?.id ?? null;
-
   for (let i = 0; i < list.length; i++) {
     bar.set(i / list.length);
     try {
-      await uploadOne(spot, list[i], { sort: photos.length + ok, uid });
+      await uploadOne(spot, list[i], { sort: photos.length + ok });
       ok++;
     } catch (err) {
       toast('第 ' + (i + 1) + ' 张上传失败：' + (err.message || err), 3200);
@@ -253,31 +247,9 @@ async function removePhoto(p) {
   if (!photos.length) bumpManifest(spot, true);
 }
 
-/* ---------- 登录（邮箱 magic link） ---------- */
+/* ---------- 按钮 ---------- */
 
-let signedIn = false;
-
-function paintAuth() {
-  $('upload').hidden = !signedIn;
-  $('manage').hidden = !signedIn;
-  $('signin').hidden = signedIn;
-  $('bulk').hidden = !signedIn;
-  $('bulk').href = 'upload.html' + (spot ? '?spot=' + encodeURIComponent(spot) : '');
-}
-
-async function initAuth() {
-  if (!sb) return;
-  const { data } = await sb.auth.getSession();
-  signedIn = !!data.session;
-  paintAuth();
-  sb.auth.onAuthStateChange((_e, session) => {
-    signedIn = !!session;
-    paintAuth();
-    if (signedIn) toast('已登录，可以上传了');
-  });
-}
-
-wireAuthDialog();
+$('bulk').href = 'upload.html' + (spot ? '?spot=' + encodeURIComponent(spot) : '');
 
 $('upload').addEventListener('click', () => $('file').click());
 $('file').addEventListener('change', (e) => {
@@ -292,4 +264,4 @@ $('manage').addEventListener('click', () => {
 
 /* ---------- 开跑 ---------- */
 
-initAuth().then(load);
+load();

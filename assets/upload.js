@@ -5,7 +5,7 @@
  *   · 画质：高质量压缩（4096px / q0.92）或原图直传（见 photo-core.js）
  *   · 只有登录后才看得到上传面板
  */
-import { CFG, sb, uploadOne, bumpManifest, spotList, wireAuthDialog } from './photo-core.js';
+import { CFG, sb, uploadOne, bumpManifest, spotList } from './photo-core.js';
 
 const $ = (id) => document.getElementById(id);
 const CONCURRENCY = 3;
@@ -39,36 +39,13 @@ $('view').addEventListener('click', (e) => {
   location.href = 'photos.html?spot=' + encodeURIComponent(currentSpot());
 });
 
-/* ---------- 登录 ---------- */
+/* ---------- 服务配置检查（不需要登录） ---------- */
 
-let signedIn = false;
-let uid = null;
-
-function paintAuth() {
-  $('panel').hidden = !signedIn;
-  $('gate').hidden = signedIn;
-  $('signin').hidden = signedIn;
-  $('who').textContent = signedIn ? '已登录，可以上传' : '';
+if (!sb) {
+  $('panel').hidden = true;
+  $('gate').hidden = false;
+  $('gate').textContent = '没配置照片服务（assets/config.js）。';
 }
-
-async function initAuth() {
-  if (!sb) {
-    $('gate').hidden = false;
-    $('gate').textContent = '没配置照片服务（assets/config.js）。';
-    return;
-  }
-  const { data } = await sb.auth.getSession();
-  signedIn = !!data.session;
-  uid = data.session?.user?.id ?? null;
-  paintAuth();
-  sb.auth.onAuthStateChange((_e, session) => {
-    signedIn = !!session;
-    uid = session?.user?.id ?? null;
-    paintAuth();
-  });
-}
-
-wireAuthDialog();
 
 /* ---------- 上传队列 ---------- */
 
@@ -127,7 +104,7 @@ async function runBatch(files) {
       const file = list[i];
       rows[i].set(original ? '上传中…' : '压缩中…', 'busy');
       try {
-        const r = await uploadOne(spot, file, { original, sort: batchSeq++, uid });
+        const r = await uploadOne(spot, file, { original, sort: batchSeq++ });
         ok++;
         rows[i].set(`✓ ${fmtMB(file.size)} → ${fmtMB(r.size)}`, 'ok');
       } catch (err) {
@@ -168,5 +145,3 @@ sel.addEventListener('change', () => {
   queue.textContent = '';
   $('summary').hidden = true;
 });
-
-initAuth();

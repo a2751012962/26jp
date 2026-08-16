@@ -85,42 +85,6 @@ export function bumpManifest(spot, remove = false) {
   } catch (e) {}
 }
 
-/* ---------- 登录弹窗（photos.html 与 upload.html 共用同一套 id） ----------
-   有密码 → 密码直接登录（不依赖邮件跳转，路上没网也不用收信）；
-   密码留空 → 发 magic link 邮件。 */
-
-export function wireAuthDialog() {
-  const $ = (id) => document.getElementById(id);
-  $('signin').addEventListener('click', () => $('auth').showModal());
-  $('auth-cancel').addEventListener('click', () => $('auth').close());
-
-  // 用 submit 事件：手机键盘的「前往/Enter」走表单提交，必须落在登录逻辑上
-  $('auth-form').addEventListener('submit', async (e) => {
-    e.preventDefault();   // method="dialog" 的默认提交会直接关弹窗
-    const email = $('auth-email').value.trim();
-    const pw = $('auth-pw').value;
-    if (!email) return;
-    const msg = $('auth-msg');
-
-    if (pw) {
-      msg.textContent = '登录中…';
-      const { error } = await sb.auth.signInWithPassword({ email, password: pw });
-      if (error) { msg.textContent = '登录失败：' + error.message; return; }
-      msg.textContent = '';
-      $('auth').close();
-    } else {
-      msg.textContent = '发送中…';
-      const { error } = await sb.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: location.href }
-      });
-      msg.textContent = error
-        ? '发送失败：' + error.message
-        : '登录链接已发到 ' + email + '，在这台设备上打开它就登录了。';
-    }
-  });
-}
-
 /* ---------- 行程里的地点清单（slug 去重，记全出现的天） ---------- */
 
 export function spotList() {

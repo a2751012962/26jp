@@ -25,10 +25,9 @@
     <div id="spot-day" class="pbar__day"></div>
   </div>
   <div class="pbar__actions">
-    <button id="signin" class="pbtn" type="button" hidden>登录以上传</button>
-    <a id="bulk" class="pbtn" hidden>批量上传</a>
-    <button id="upload" class="pbtn pbtn--primary" type="button" hidden>上传照片</button>
-    <button id="manage" class="pbtn" type="button" hidden>管理</button>
+    <a id="bulk" class="pbtn">批量上传</a>
+    <button id="upload" class="pbtn pbtn--primary" type="button">上传照片</button>
+    <button id="manage" class="pbtn" type="button">管理</button>
   </div>
 </header>
 
@@ -40,23 +39,6 @@
 </main>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
-<!-- 登录：邮箱 magic link，只有你需要用 -->
-<dialog id="auth" class="pdialog">
-  <form id="auth-form" method="dialog">
-    <h2 class="pdialog__title">登录后才能上传</h2>
-    <p class="pdialog__hint">输入邮箱和密码登录；密码留空则发一条登录链接到邮箱。</p>
-    <input id="auth-email" class="pinput" type="email" inputmode="email" autocomplete="email"
-           placeholder="you@example.com" required>
-    <input id="auth-pw" class="pinput" type="password" autocomplete="current-password"
-           placeholder="密码（留空则走邮件链接）">
-    <div class="pdialog__row">
-      <button id="auth-cancel" class="pbtn" type="button">取消</button>
-      <button id="auth-send" class="pbtn pbtn--primary" type="submit">登录</button>
-    </div>
-    <div id="auth-msg" class="pdialog__msg"></div>
-  </form>
-</dialog>
 
 <script src="assets/config.js" defer></script>
 <script src="assets/data.js" defer></script>
