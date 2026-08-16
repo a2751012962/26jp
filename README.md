@@ -30,6 +30,9 @@
 - 上传前浏览器把照片压到最长边 4096px / JPEG q0.92（原图 10MB+ → 约 1‒2MB，构图细节都在），
   并读出宽高存进数据库，这样照片墙在加载时不会跳动。上传页里也可选**原图直传**
   （JPEG/PNG/WebP 不重新编码；HEIC 仍会转成 JPEG，否则安卓/电脑上显示不了）。
+- 每张照片同时生成一张 **720px 宽 / q0.8 的缩略图**（约 70‒150KB）：瀑布流网格加载
+  缩略图，点开全屏才取大图 —— 4G 下首屏 <1MB，秒级出图。720 = 列宽上限 340 CSS px
+  × 2x 屏 680 物理像素再留余量；两个文件同名（`.t.jpg` 后缀区分），删除时一起清。
 - 照片墙用 [@egjs/grid](https://github.com/naver/egjs-grid) 的 MasonryGrid：列数和列宽按容器实际宽度实时算（ResizeObserver），没有写死的断点，转屏立刻重排。点开是 [PhotoSwipe](https://github.com/dimsemenov/PhotoSwipe) 全屏，可捏合缩放。
 - 后端是 Supabase（项目 `26jp-trip-photos`，东京区）。权限由 RLS 把关：**任何人可读，只有登录的人能传/删**。`assets/config.js` 里的 publishable key 本来就是给浏览器用的，可以公开提交；service_role key 绝对不要放进去。
 

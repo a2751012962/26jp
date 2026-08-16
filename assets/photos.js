@@ -93,7 +93,8 @@ function renderWall() {
     img.decoding = 'async';
     img.alt = p.caption || (found ? found.row.place : '示例照片');
     img.style.setProperty('--ar', `${p.width} / ${p.height}`);
-    img.src = publicUrl(p.path);
+    // 网格加载 720px 缩略图（约 100KB），点开全屏才取大图；旧行没有缩略图就回落到大图
+    img.src = publicUrl(p.thumb || p.path);
     // 位置在加载前就由 aspect-ratio 定好了，所以这里只负责淡入；
     // 万一实际比例和数据库不符，observeChildren 会自己触发重排。
     img.addEventListener('load', () => img.classList.add('is-loaded'));
@@ -173,7 +174,7 @@ async function load() {
 
   const { data, error } = await sb
     .from(CFG.table)
-    .select('id, spot, path, width, height, caption, sort, created_at')
+    .select('id, spot, path, thumb, width, height, caption, sort, created_at')
     .eq('spot', spot)
     .order('sort', { ascending: true })
     .order('created_at', { ascending: true });
@@ -240,7 +241,7 @@ async function removePhoto(p) {
   if (!confirm('删除这张照片？')) return;
   const row = await sb.from(CFG.table).delete().eq('id', p.id);
   if (row.error) { toast('删除失败：' + row.error.message, 3000); return; }
-  const gone = await sb.storage.from(CFG.bucket).remove([p.path]);
+  const gone = await sb.storage.from(CFG.bucket).remove([p.path, p.thumb].filter(Boolean));
   if (gone.error) toast('照片已删掉，但存储文件没清干净：' + gone.error.message, 3200);
   else toast('已删除');
   await load();

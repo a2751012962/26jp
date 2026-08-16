@@ -26,52 +26,75 @@ export function loadImage(file) {
   });
 }
 
-export async function shrink(file, maxEdge = 4096, quality = 0.92) {
-  const img = await loadImage(file);
-  const scale = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
-  const w = Math.round(img.naturalWidth * scale);
-  const h = Math.round(img.naturalHeight * scale);
+const MAX_EDGE = 4096;      // 大图：最长边
+const JPEG_Q = 0.92;
+/* 缩略图按"显示宽度"出：瀑布流列宽上限 340 CSS px，主流 2x 屏需要
+   680 物理像素，取 720 留一点余量。q0.8 下单张约 70‒150KB。 */
+const THUMB_WIDTH = 720;
+const THUMB_Q = 0.8;
 
+function toJpeg(img, w, h, quality) {
   const canvas = document.createElement('canvas');
   canvas.width = w;
   canvas.height = h;
   canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-
-  const blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', quality));
-  if (!blob) throw new Error('压缩失败');
-  return { blob, width: w, height: h };
+  return new Promise((res, rej) =>
+    canvas.toBlob((b) => (b ? res(b) : rej(new Error('压缩失败'))), 'image/jpeg', quality));
 }
 
-/* 原图直传：不重新编码，只读出宽高。仅限浏览器都能显示的格式 ——
-   HEIC/Live Photo 必须走 shrink() 转成 JPEG，否则安卓和电脑上是裂图。 */
+/* 原图直传只对浏览器都能显示的格式开放 ——
+   HEIC/Live Photo 必须转成 JPEG，否则安卓和电脑上是裂图。 */
 export const DIRECT_TYPES = /^image\/(jpeg|png|webp)$/;
 
-export async function passthrough(file) {
+/* ---------- 上传一张：大图 + 缩略图 → Storage → 表 ----------
+   三步任何一步失败都把已传的文件删干净，表和存储桶永远一致。 */
+
+export async function uploadOne(spot, file, { original = false, sort = 0 } = {}) {
   const img = await loadImage(file);
-  return { blob: file, width: img.naturalWidth, height: img.naturalHeight,
-           type: file.type, ext: file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg' };
-}
 
-/* ---------- 上传一张（压缩或直传 → Storage → 表） ---------- */
+  // 大图：压缩到 4096px，或（原图直传时）原样字节
+  let big, bigType, ext, width, height;
+  if (original && DIRECT_TYPES.test(file.type)) {
+    big = file;
+    bigType = file.type;
+    ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+    width = img.naturalWidth;
+    height = img.naturalHeight;
+  } else {
+    const scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+    width = Math.round(img.naturalWidth * scale);
+    height = Math.round(img.naturalHeight * scale);
+    big = await toJpeg(img, width, height, JPEG_Q);
+    bigType = 'image/jpeg';
+    ext = 'jpg';
+  }
 
-export async function uploadOne(spot, file, { original = false, sort = 0, uid = null } = {}) {
-  const direct = original && DIRECT_TYPES.test(file.type);
-  const shot = direct ? await passthrough(file) : await shrink(file);
-  const ext = direct ? shot.ext : 'jpg';
-  const name = `${spot}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  // 缩略图：网格里显示用（全屏才取大图）
+  const tw = Math.min(THUMB_WIDTH, img.naturalWidth);
+  const th = Math.round(img.naturalHeight * tw / img.naturalWidth);
+  const small = await toJpeg(img, tw, th, THUMB_Q);
 
-  const up = await sb.storage.from(CFG.bucket)
-    .upload(name, shot.blob, { contentType: direct ? shot.type : 'image/jpeg', cacheControl: '31536000' });
-  if (up.error) throw up.error;
+  const base = `${spot}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const path = `${base}.${ext}`;
+  const thumb = `${base}.t.jpg`;
 
-  const row = await sb.from(CFG.table).insert({
-    spot, path: name, width: shot.width, height: shot.height, sort, created_by: uid
-  });
+  const up1 = await sb.storage.from(CFG.bucket)
+    .upload(path, big, { contentType: bigType, cacheControl: '31536000' });
+  if (up1.error) throw up1.error;
+
+  const up2 = await sb.storage.from(CFG.bucket)
+    .upload(thumb, small, { contentType: 'image/jpeg', cacheControl: '31536000' });
+  if (up2.error) {
+    await sb.storage.from(CFG.bucket).remove([path]);
+    throw up2.error;
+  }
+
+  const row = await sb.from(CFG.table).insert({ spot, path, thumb, width, height, sort });
   if (row.error) {
-    await sb.storage.from(CFG.bucket).remove([name]);   // 别留孤儿文件
+    await sb.storage.from(CFG.bucket).remove([path, thumb]);
     throw row.error;
   }
-  return { path: name, size: shot.blob.size };
+  return { path, size: big.size, thumbSize: small.size };
 }
 
 /* ---------- 「哪些地点有照片」清单缓存 ---------- */
