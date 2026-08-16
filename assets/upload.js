@@ -19,16 +19,56 @@ function toast(msg, ms = 2200) {
   toastTimer = setTimeout(() => t.classList.remove('is-on'), ms);
 }
 
-/* ---------- 地点下拉框 ---------- */
+/* ---------- 日期筛选 + 地点下拉框 ----------
+   两者都从 assets/data.js 现场生成：改行程 → 部署后这里自动跟着变，
+   不用维护任何清单。 */
 
 const spots = spotList();
 const sel = $('spot');
-for (const s of spots) {
-  const opt = document.createElement('option');
-  opt.value = s.spot;
-  opt.textContent = `${s.place}（${s.days.join('、')}）`;
-  sel.appendChild(opt);
+let dayFilter = '';   // '' = 全部
+
+function renderSpotOptions() {
+  const cur = sel.value;
+  sel.textContent = '';
+  for (const s of spots) {
+    if (dayFilter && !s.days.includes(dayFilter)) continue;
+    const opt = document.createElement('option');
+    opt.value = s.spot;
+    opt.textContent = `${s.place}（${s.days.join('、')}）`;
+    sel.appendChild(opt);
+  }
+  // 原选择还在筛选结果里就保住；不在就落到第一项，并按"换了地点"清空队列
+  if (Array.from(sel.options).some((o) => o.value === cur)) {
+    sel.value = cur;
+  } else if (sel.options.length) {
+    sel.selectedIndex = 0;
+    if (cur) resetBatch();   // 首次渲染（cur 为空）不算换地点
+  }
 }
+
+// 换地点 = 新一批：从头计 sort，清掉旧列表
+function resetBatch() {
+  batchSeq = 0;
+  $('queue').textContent = '';
+  $('summary').hidden = true;
+}
+
+const dayWrap = $('dayfilter');
+['', ...window.TRIP.days.map((d) => d.label)].forEach((label) => {
+  const chip = document.createElement('button');
+  chip.type = 'button';
+  chip.className = 'chip';
+  chip.textContent = label || '全部';
+  chip.addEventListener('click', () => {
+    dayFilter = label;
+    for (const c of dayWrap.children) c.setAttribute('aria-current', String(c === chip));
+    renderSpotOptions();
+  });
+  dayWrap.appendChild(chip);
+});
+dayWrap.firstChild.setAttribute('aria-current', 'true');
+
+renderSpotOptions();
 const wanted = new URLSearchParams(location.search).get('spot');
 if (wanted && spots.some((s) => s.spot === wanted)) sel.value = wanted;
 
@@ -139,9 +179,4 @@ $('file').addEventListener('change', (e) => {
   drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove('is-over'); }));
 drop.addEventListener('drop', (e) => runBatch(e.dataTransfer.files));
 
-// 切换地点 = 新一批，从头计 sort，清掉旧列表
-sel.addEventListener('change', () => {
-  batchSeq = 0;
-  queue.textContent = '';
-  $('summary').hidden = true;
-});
+sel.addEventListener('change', resetBatch);

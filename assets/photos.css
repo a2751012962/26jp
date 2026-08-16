@@ -211,6 +211,9 @@
 
 select.pinput { appearance: auto; -webkit-appearance: auto; }
 
+/* 日期筛选条：复用行程页的 .chip 外观 */
+.up-days { display: flex; flex-wrap: wrap; gap: 6px; }
+
 .up-quality label { display: block; padding: 0.15em 0; cursor: pointer; }
 .up-quality small { color: var(--muted); margin-left: 0.35em; }
 
