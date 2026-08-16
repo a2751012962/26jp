@@ -27,7 +27,7 @@ window.TRIP = {
         { t: 'row', spot: 'komachi-dori', time: '16:15‒17:15', place: '镰仓 小町通り', dur: '▶ 20分' },
         { t: 'row', spot: 'shichirigahama', time: '17:35‒17:55', place: '七里ヶ浜', dur: '▶ 就近' },
         { t: 'row', spot: 'bills-shichirigahama', time: '18:00‒19:15', place: 'bills 七里ヶ浜 晚餐', dur: '▶ 15分' },
-        { t: 'row', spot: 'enoshima-night', time: '19:30', place: '江の島（夜景）→ 送酒店' },
+        { t: 'row', spot: 'enoshima-night', time: '19:30', place: '江の島（夜景）→ 送 HOTEL AO KAMAKURA' },
         { t: 'fallback', text: '航班延误、15:30 后才上车 → 跳过小町通，直接开七里ヶ浜，保证 18:00 到 bills' },
         { t: 'legend' }
       ]
@@ -51,7 +51,7 @@ window.TRIP = {
         { t: 'row', spot: 'moa-museum', time: '13:35‒15:15', place: 'MOA美術館', note: '游客反馈最少需1.5〜2小时；最终入馆16:00', dur: '▶ 10分' },
         { t: 'row', spot: 'kiunkaku', time: '15:30‒16:15', place: '起雲閣', note: '一圈实测约40分；最终入馆16:30', dur: '▶ 5分' },
         { t: 'row', spot: 'kimonoya', time: '16:25 到店', kind: 'fixed', place: 'Kimonoya', note: '16:30 发型师预约，不可迟到', noteWarn: true },
-        { t: 'row', spot: 'atami-ginza', time: '17:45', place: '银座商店街 放下', note: '在此晚餐，之后步行去沙滩看花火，晚上不用车' },
+        { t: 'row', spot: 'atami-ginza', time: '17:45', place: '银座商店街 放下', note: '在此晚餐，之后步行去沙滩看花火，晚上不用车；当晚住 Atami Seaside Spa & Resort' },
         { t: 'fallback', text: '12:30 后才离开江の島 → 放弃起雲閣，MOA 改 14:10‒15:50，16:25 直接到 Kimonoya' }
       ]
     },
@@ -113,7 +113,7 @@ window.TRIP = {
         { t: 'row', spot: 'izu-panorama', time: '13:10‒14:40', place: '伊豆パノラマパーク', note: '缆车往返＋碧テラス，目安60〜120分', dur: '▶ 85分' },
         { t: 'row', spot: 'narukawa-museum', time: '16:10‒17:00', place: '成川美術館', note: '最终入馆16:30', dur: '▶ 5分' },
         { t: 'row', spot: 'hakone-torii', time: '17:10‒17:45', place: '箱根神社 平和の鳥居', note: '拍照，天气好务必今天拍完', dur: '▶ 25分' },
-        { t: 'row', spot: 'suiun', time: '18:15', place: '翠雲 入住' },
+        { t: 'row', spot: 'suiun', time: '18:15', place: '雪月花別邸 翠雲 入住' },
         { t: 'fallback', text: 'じゅうろく 排队超过 30 分 → 缩短修善寺停留，パノラマパーク 改 13:40 上山' },
         { t: 'fallback', text: '16:20 后才到元箱根 → 放弃成川美術館，直接去鳥居拍照，17:00‒17:45' },
         { t: 'fallback', text: '当天下雨拍不成 → 鳥居改到 8/23 早上补，8/23 提前到 08:00 出发' }
@@ -132,7 +132,7 @@ window.TRIP = {
         { t: 'row', spot: 'lalique-museum', time: '12:15 到馆', kind: 'fixed', place: '箱根ラリック美術館', note: '一到就取下午茶整理券（东方快车餐车），先确认剩余场次', noteWarn: true },
         { t: 'plan', label: '方案 A', text: '取到 13:00 前后场：12:20‒14:20 参观＋下午茶 → 14:35‒15:45 ポーラ美術館 → 16:00‒16:45 ガラスの森' },
         { t: 'plan', label: '方案 B', text: '只剩 15:00 以后场：12:30‒14:00 ポーラ美術館 → 14:20 回ラリック，14:30‒16:30 下午茶 → ガラスの森 省略' },
-        { t: 'row', spot: 'beef-pot-ukon', time: '17:00', kind: 'fixed', place: 'Beef pot Ukon 晚餐 → 送酒店' },
+        { t: 'row', spot: 'beef-pot-ukon', time: '17:00', kind: 'fixed', place: 'Beef pot Ukon 晚餐 → 送 翠雲' },
         { t: 'fallback', text: '16:45 赶不及 → 省略最后一馆，保证 17:00 到 Ukon' },
         { t: 'warn', text: '下午茶预留满 120 分钟。先上山可避开大涌谷的人潮与午后云雾。' }
       ]
@@ -150,10 +150,10 @@ window.TRIP = {
         { t: 'row', spot: 'open-air-museum', time: '13:00‒14:15', place: '彫刻の森美術館', note: '官方主环线60〜90分，本次只走主环线', dur: '▶ 15分' },
         { t: 'row', spot: 'hakone-yumoto', time: '14:30‒15:00', place: '箱根湯本 站前商店街', dur: '▶ 115分' },
         { t: 'row', spot: 'asako-iwayanagi', time: '17:00‒17:30', kind: 'fixed', place: 'PÂTISSERIE ASAKO IWAYANAGI', note: '世田谷区等々力4-4-5　03-6432-3878　已预约', noteWarn: true, dur: '▶ 30分' },
-        { t: 'row', spot: 'roppongi-hotel', time: '18:00', place: '六本木酒店 卸行李·入住', dur: '▶ 就近' },
+        { t: 'row', spot: 'roppongi-hotel', time: '18:00', place: '三井ガーデンホテル六本木プレミア 卸行李·入住', dur: '▶ 就近' },
         { t: 'row', spot: 'roppongi-hills-view', time: '18:30', place: '六本木新城 展望台' },
         { t: 'row', spot: 'ushimatsu', time: '20:00', kind: 'fixed', place: '焼肉 うし松', note: '已预约', noteWarn: true },
-        { t: 'row', spot: 'tokyo-tower', time: '22:00', place: '东京铁塔 → 送酒店' },
+        { t: 'row', spot: 'tokyo-tower', time: '22:00', place: '东京铁塔 → 送 三井ガーデン六本木' },
         { t: 'fallback', text: '14:30 前出不了汤本 → 跳过商店街，直接上高速，保证 17:00 甜品店' },
         { t: 'fallback', text: '8/21 鳥居没拍成 → 改 08:00 出发，先去箱根神社，其余顺延，湯本商店街取消' },
         { t: 'warn', text: '周日下午东名·首都可能高拥堵' }
@@ -176,7 +176,7 @@ window.TRIP = {
       title: '东京 → 羽田',
       tag: { kind: 'plain', text: '送机' },
       blocks: [
-        { t: 'row', spot: 'haneda-dropoff', tall: true, time: '待定', kind: 'go', place: '三井花园酒店六本木 → 羽田空港', note: '按起飞前3小时到达倒推，另行通知', dur: '▶ 35分' },
+        { t: 'row', spot: 'haneda-dropoff', tall: true, time: '待定', kind: 'go', place: '三井ガーデンホテル六本木プレミア → 羽田空港', note: '按起飞前3小时到达倒推，另行通知', dur: '▶ 35分' },
         {
           t: 'lodging',
           title: '住宿一览（8晚）',

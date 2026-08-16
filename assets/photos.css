@@ -186,6 +186,7 @@
   color: var(--ink);
 }
 .pinput:focus { outline: 2px solid var(--ac); outline-offset: -1px; }
+.pdialog .pinput + .pinput { margin-top: 0.6em; }
 
 /* 照片页的提示条要能显示任意文案 */
 .photos-body .toast { white-space: pre-line; text-align: center; }

@@ -45,12 +45,14 @@
 <dialog id="auth" class="pdialog">
   <form id="auth-form" method="dialog">
     <h2 class="pdialog__title">登录后才能上传</h2>
-    <p class="pdialog__hint">填邮箱，我们发一条登录链接过去，点开就登录了，不用记密码。</p>
+    <p class="pdialog__hint">输入邮箱和密码登录；密码留空则发一条登录链接到邮箱。</p>
     <input id="auth-email" class="pinput" type="email" inputmode="email" autocomplete="email"
            placeholder="you@example.com" required>
+    <input id="auth-pw" class="pinput" type="password" autocomplete="current-password"
+           placeholder="密码（留空则走邮件链接）">
     <div class="pdialog__row">
       <button id="auth-cancel" class="pbtn" type="button">取消</button>
-      <button id="auth-send" class="pbtn pbtn--primary" type="submit">发送链接</button>
+      <button id="auth-send" class="pbtn pbtn--primary" type="submit">登录</button>
     </div>
     <div id="auth-msg" class="pdialog__msg"></div>
   </form>

@@ -9,7 +9,7 @@
  *   · 谁都能看；只有登录的人（你）看得到上传和管理按钮。
  */
 import PhotoSwipeLightbox from './vendor/photoswipe-lightbox.esm.min.js';
-import { CFG, sb, publicUrl, uploadOne, bumpManifest } from './photo-core.js';
+import { CFG, sb, publicUrl, uploadOne, bumpManifest, wireAuthDialog } from './photo-core.js';
 
 const $ = (id) => document.getElementById(id);
 const wall = $('wall');
@@ -277,24 +277,7 @@ async function initAuth() {
   });
 }
 
-$('signin').addEventListener('click', () => $('auth').showModal());
-$('auth-cancel').addEventListener('click', () => $('auth').close());
-
-// 用 submit 事件：手机键盘上按「前往/Enter」走的是表单提交，
-// 必须让它落在发送逻辑上，而不是把弹窗关掉
-$('auth-form').addEventListener('submit', async (e) => {
-  e.preventDefault();   // method="dialog" 的默认提交会直接关弹窗
-  const email = $('auth-email').value.trim();
-  if (!email) return;
-  $('auth-msg').textContent = '发送中…';
-  const { error } = await sb.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: location.href }
-  });
-  $('auth-msg').textContent = error
-    ? '发送失败：' + error.message
-    : '登录链接已发到 ' + email + '，在这台设备上打开它就登录了。';
-});
+wireAuthDialog();
 
 $('upload').addEventListener('click', () => $('file').click());
 $('file').addEventListener('change', (e) => {

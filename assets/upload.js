@@ -5,7 +5,7 @@
  *   · 画质：高质量压缩（4096px / q0.92）或原图直传（见 photo-core.js）
  *   · 只有登录后才看得到上传面板
  */
-import { CFG, sb, uploadOne, bumpManifest, spotList } from './photo-core.js';
+import { CFG, sb, uploadOne, bumpManifest, spotList, wireAuthDialog } from './photo-core.js';
 
 const $ = (id) => document.getElementById(id);
 const CONCURRENCY = 3;
@@ -68,23 +68,7 @@ async function initAuth() {
   });
 }
 
-$('signin').addEventListener('click', () => $('auth').showModal());
-$('auth-cancel').addEventListener('click', () => $('auth').close());
-
-// 手机键盘的「前往/Enter」走表单提交，必须落在发送逻辑上
-$('auth-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = $('auth-email').value.trim();
-  if (!email) return;
-  $('auth-msg').textContent = '发送中…';
-  const { error } = await sb.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: location.href }
-  });
-  $('auth-msg').textContent = error
-    ? '发送失败：' + error.message
-    : '登录链接已发到 ' + email + '，在这台设备上打开它就登录了。';
-});
+wireAuthDialog();
 
 /* ---------- 上传队列 ---------- */
 
