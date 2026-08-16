@@ -263,3 +263,22 @@ select.pinput { appearance: auto; -webkit-appearance: auto; }
   color: var(--acInk);
 }
 .up-summary .pbtn { text-decoration: none; }
+
+/* 孤儿照片提醒：库里有照片、行程里已没有这个 slug */
+.up-orphans {
+  width: min(44rem, 100%);
+  margin: clamp(14px, 2vw, 22px) auto 0;
+  padding: 0.8em 0.9em;
+  background: var(--warn-bg);
+  font: 400 clamp(13px, 1.5vw, 15px)/1.6 var(--sans);
+  color: var(--warn-ink);
+}
+.up-orphans__head { font-weight: 700; margin-bottom: 0.4em; }
+.up-orphans__link {
+  display: inline-block;
+  margin: 0.15em 0.6em 0.15em 0;
+  color: var(--warn-mark);
+  font-weight: 700;
+  text-underline-offset: 0.2em;
+}
+.up-orphans__tail { margin-top: 0.4em; color: var(--muted); }

@@ -180,3 +180,37 @@ $('file').addEventListener('change', (e) => {
 drop.addEventListener('drop', (e) => runBatch(e.dataTransfer.files));
 
 sel.addEventListener('change', resetBatch);
+
+/* ---------- 孤儿检测 ----------
+   照片只认 slug。行程里改了 slug 或删了地点后，那批照片不会丢，
+   只是没了入口。这里把「库里有照片、行程里却查无此地」的 slug 摆出来，
+   免得改行程后照片悄悄"消失"却没人发现。 */
+
+async function checkOrphans() {
+  if (!sb) return;
+  const { data, error } = await sb.from(CFG.table).select('spot');
+  if (error || !data) return;   // 离线就算了，下次打开再查
+  const known = new Set(spots.map((s) => s.spot));
+  const orphans = [...new Set(data.map((r) => r.spot))].filter((s) => !known.has(s));
+  if (!orphans.length) return;
+
+  const box = $('orphans');
+  box.hidden = false;
+  box.textContent = '';
+  const head = document.createElement('div');
+  head.className = 'up-orphans__head';
+  head.textContent = '⚠ 下面这些地点在库里有照片，但行程里已经没有这个 slug（改过 slug 或删过地点？）。照片都还在，点进去可以看：';
+  box.appendChild(head);
+  for (const s of orphans) {
+    const a = document.createElement('a');
+    a.className = 'up-orphans__link';
+    a.href = 'photos.html?spot=' + encodeURIComponent(s);
+    a.textContent = s;
+    box.appendChild(a);
+  }
+  const tail = document.createElement('div');
+  tail.className = 'up-orphans__tail';
+  tail.textContent = '想把它们迁到现在行程里的某个地点，改一下数据库里的 spot 字段即可（或者告诉 Claude 帮你迁）。';
+  box.appendChild(tail);
+}
+checkOrphans();
