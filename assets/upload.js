@@ -116,6 +116,7 @@ function setBusy(on) {
   running = on;
   sel.disabled = on;
   for (const c of dayWrap.children) c.disabled = on;
+  for (const r of document.querySelectorAll('input[name="q"]')) r.disabled = on;
   drop.classList.toggle('is-disabled', on);
   $('file').disabled = on;
 }

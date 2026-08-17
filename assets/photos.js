@@ -89,6 +89,8 @@ function renderWall() {
     // 位置在加载前就由 aspect-ratio 定好了，所以这里只负责淡入；
     // 万一实际比例和数据库不符，observeChildren 会自己触发重排。
     img.addEventListener('load', () => img.classList.add('is-loaded'));
+    // 请求失败（离线、文件被删）：标出来，别让格子永远"呼吸"下去
+    img.addEventListener('error', () => fig.classList.add('shot--err'));
 
     a.appendChild(img);
     fig.appendChild(a);

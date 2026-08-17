@@ -110,9 +110,25 @@
 
 /* 还没加载出来的格子轻微呼吸，一眼可辨"这里有图，在路上" */
 @keyframes shot-breathe { 50% { background-color: oklch(0.91 0.008 85); } }
-.shot:not(:has(.shot__img.is-loaded)) { animation: shot-breathe 1.4s ease-in-out infinite; }
+.shot:not(:has(.shot__img.is-loaded)):not(.shot--err) {
+  animation: shot-breathe 1.4s ease-in-out infinite;
+}
 @media (prefers-reduced-motion: reduce) {
-  .shot { animation: none; }
+  /* 与上面同一选择器，优先级才压得过 */
+  .shot:not(:has(.shot__img.is-loaded)):not(.shot--err) { animation: none; }
+}
+
+/* 缩略图请求失败：停止呼吸，明确标出，别永远装作"在加载" */
+.shot--err { background: oklch(0.9 0.015 25); }
+.shot--err::after {
+  content: '图片加载失败';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 400 clamp(11px, 1.3vw, 13px)/1.4 var(--sans);
+  color: var(--warn-ink);
 }
 
 .shot__img {
