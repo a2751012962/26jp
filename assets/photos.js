@@ -10,6 +10,7 @@
  */
 import PhotoSwipeLightbox from './vendor/photoswipe-lightbox.esm.min.js';
 import { CFG, sb, publicUrl, uploadOne, bumpManifest } from './photo-core.js';
+import { createWall } from './wall.js';
 
 const $ = (id) => document.getElementById(id);
 const wall = $('wall');
@@ -69,7 +70,7 @@ function toast(msg, ms = 1800) {
 
 /* ---------- 瀑布流 ---------- */
 
-let grid = null;
+const wallCmp = createWall(wall);
 let photos = [];
 
 function renderWall() {
@@ -125,28 +126,7 @@ function renderWall() {
   }
 
   wall.hidden = photos.length === 0;
-
-  if (!photos.length) {
-    grid?.destroy();
-    grid = null;
-    return;
-  }
-
-  if (!grid) {
-    /* align:'stretch' + maxStretchColumnSize：列数由容器实际宽度自动算出，
-       列宽再拉伸到刚好填满，单列不超过 340px。所以没有任何写死的断点 ——
-       窄屏自然是 1 列，平板 2〜3 列，桌面 4 列往上，转屏也立刻重排。 */
-    grid = new Grid.MasonryGrid(wall, {
-      gap: 14,
-      align: 'stretch',
-      maxStretchColumnSize: 340,
-      useResizeObserver: true,
-      observeChildren: true
-    });
-  } else {
-    grid.syncElements();
-  }
-  grid.renderItems();
+  wallCmp.render();
 }
 
 /* ---------- 全屏查看 ---------- */

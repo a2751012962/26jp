@@ -191,6 +191,11 @@
 /* 照片页的提示条要能显示任意文案 */
 .photos-body .toast { white-space: pre-line; text-align: center; }
 
+/* 手机上照片近乎通栏：屏幕本来就窄，页边距让给照片 */
+@media (max-width: 480px) {
+  .pmain { padding-left: 6px; padding-right: 6px; }
+}
+
 /* ---------- 批量上传页 ---------- */
 
 /* 类里写了 display:flex 的元素，hidden 属性会被它压过 —— 这里补回来 */
