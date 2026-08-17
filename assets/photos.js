@@ -79,12 +79,13 @@ function renderWall() {
 
     const img = document.createElement('img');
     img.className = 'shot__img';
-    img.loading = 'lazy';
     img.decoding = 'async';
     img.alt = p.caption || (found ? found.row.place : '示例照片');
     img.style.setProperty('--ar', `${p.width} / ${p.height}`);
-    // 网格加载 720px 缩略图（约 100KB），点开全屏才取大图；旧行没有缩略图就回落到大图
-    img.src = publicUrl(p.thumb || p.path);
+    // 网格加载 720px 缩略图，点开全屏才取大图；旧行没有缩略图就回落到大图。
+    // src 由下面的 IntersectionObserver 按滚动位置提前 2000px 赋值 ——
+    // iOS Safari 的原生 loading=lazy 预取距离太短，4G 下滚动会跑赢下载。
+    img.dataset.src = publicUrl(p.thumb || p.path);
     // 位置在加载前就由 aspect-ratio 定好了，所以这里只负责淡入；
     // 万一实际比例和数据库不符，observeChildren 会自己触发重排。
     img.addEventListener('load', () => img.classList.add('is-loaded'));
@@ -116,6 +117,26 @@ function renderWall() {
 
   wall.hidden = photos.length === 0;
   wallCmp.render();
+  watchLazy();
+}
+
+/* 提前 2000px（约三屏）开始下载：看当前屏时后面的图已经在路上 */
+let lazyIO = null;
+
+function watchLazy() {
+  lazyIO?.disconnect();
+  lazyIO = new IntersectionObserver((entries) => {
+    for (const en of entries) {
+      if (!en.isIntersecting) continue;
+      const im = en.target;
+      if (im.dataset.src) {
+        im.src = im.dataset.src;
+        delete im.dataset.src;
+      }
+      lazyIO.unobserve(im);
+    }
+  }, { rootMargin: '2000px 0px' });
+  wall.querySelectorAll('img.shot__img[data-src]').forEach((im) => lazyIO.observe(im));
 }
 
 /* ---------- 全屏查看 ---------- */

@@ -101,9 +101,18 @@
 .shot {
   display: block;
   width: 100%;        /* 实际宽度由 MasonryGrid 覆盖 */
-  background: oklch(0.9 0.006 85);
+  /* 占位底色要和页面背景拉开差距，等待中的图才读得出"在加载"，
+     而不是一片和背景同色的"空洞" */
+  background: oklch(0.865 0.01 85);
   cursor: zoom-in;
   overflow: hidden;
+}
+
+/* 还没加载出来的格子轻微呼吸，一眼可辨"这里有图，在路上" */
+@keyframes shot-breathe { 50% { background-color: oklch(0.91 0.008 85); } }
+.shot:not(:has(.shot__img.is-loaded)) { animation: shot-breathe 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .shot { animation: none; }
 }
 
 .shot__img {
