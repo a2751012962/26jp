@@ -94,9 +94,10 @@ assets/
   photos.js         照片页：加载／瀑布流／全屏／上传／删除
   upload.js         上传页：队列／并行／原图直传
   config.js         Supabase 连接信息
-  vendor/           @egjs/grid、PhotoSwipe、supabase-js（由 scripts/copy-vendor.mjs 生成）
+  wall.js           瀑布流布局（纯数学，无测量）
+  vendor/           PhotoSwipe、supabase-js（由 scripts/copy-vendor.mjs 生成）
 scripts/            Vercel 构建脚本（取 vendor、组装 public/）
-package.json        钉死三个前端库的版本；npm run build 出 public/
+package.json        钉死两个前端库的版本；npm run build 出 public/
 project/            Claude Design 交付的设计稿原件与 9 张导出图片
 chats/              设计过程的对话记录
 ```

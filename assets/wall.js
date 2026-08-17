@@ -22,11 +22,18 @@ const gapFor = (w) => Math.max(6, Math.min(16, Math.round(w * 0.018)));
 export function createWall(container) {
   let ro = null;
   let raf = 0;
+  let lastW = 0;
+  let lastN = 0;
 
-  function layout() {
+  function layout(force) {
     const w = container.clientWidth;
     const figs = Array.from(container.children);
     if (!w || !figs.length) return;
+    // layout() 自己会写容器高度，这会再触发一次 ResizeObserver ——
+    // 宽度和条目数都没变就直接返回，别把整套读写再跑一遍
+    if (!force && w === lastW && figs.length === lastN) return;
+    lastW = w;
+    lastN = figs.length;
 
     const gap = gapFor(w);
     const n = Math.max(1, Math.ceil(w / MAX_COLUMN));
@@ -44,7 +51,8 @@ export function createWall(container) {
     // 纯数学定位：放进当前最短的列
     const tops = new Array(n).fill(0);
     figs.forEach((f, i) => {
-      const ratio = parseFloat(f.dataset.ratio) || 1.5;
+      let ratio = parseFloat(f.dataset.ratio);
+      if (!isFinite(ratio) || ratio <= 0) ratio = 1.5;   // 脏数据（宽高缺失）兜底
       const h = colW / ratio + capH[i];
       let c = 0;
       for (let k = 1; k < n; k++) if (tops[k] < tops[c]) c = k;
@@ -54,10 +62,14 @@ export function createWall(container) {
     container.style.height = Math.round(Math.max(...tops) - gap) + 'px';
   }
 
-  function schedule() {
+  function schedule(force) {
     cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(layout);
+    raf = requestAnimationFrame(() => layout(force));
   }
+
+  // 说明文字的换行高度随字体变：webfont（Noto Sans SC）加载完成后
+  // 强制重排一次，否则按回退字体量的高度可能差一行，卡片互相压住
+  document.fonts?.ready.then(() => schedule(true));
 
   return {
     /* 调用方先把 <figure>（带 data-ratio=宽/高）画进 container，再调 render() */
@@ -67,10 +79,10 @@ export function createWall(container) {
         return;
       }
       if (!ro) {
-        ro = new ResizeObserver(schedule);   // 转屏/分屏即时重排
+        ro = new ResizeObserver(() => schedule(false));   // 转屏/分屏即时重排
         ro.observe(container);
       }
-      layout();
+      layout(true);   // 内容刚重建过，说明文字可能变了，强制跑
     },
     destroy() {
       cancelAnimationFrame(raf);

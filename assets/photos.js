@@ -1,7 +1,7 @@
 /* 示例照片页 —— photos.html?spot=<slug>
  *
- *   · 瀑布流用 @egjs/grid 的 MasonryGrid：列数与列宽按容器实际宽度实时算
- *     （内部走 ResizeObserver），不写死断点数字。
+ *   · 瀑布流布局自算（wall.js）：每张图的宽高在数据库里，位置是纯数学，
+ *     不做渲染后测量；列数按容器宽度实时算，不写死断点数字。
  *   · 每格先按数据库里的宽高设 aspect-ratio 占位，图片加载时不会跳动。
  *   · 点开是 PhotoSwipe 全屏，可捏合缩放、左右滑。
  *   · 上传走 photo-core.js：压到最长边 4096px / JPEG q0.92（约 1‒2MB）。
@@ -69,7 +69,8 @@ function renderWall() {
     const fig = document.createElement('figure');
     fig.className = 'shot';
     fig.dataset.id = p.id;
-    fig.dataset.ratio = p.width / p.height;   // 布局直接用它算高度，不测量
+    // 布局直接用它算高度，不测量；宽高缺失的脏数据交给 wall.js 兜底
+    fig.dataset.ratio = (p.width > 0 && p.height > 0) ? p.width / p.height : '';
 
     const a = document.createElement('a');
     a.href = publicUrl(p.path);
@@ -82,13 +83,13 @@ function renderWall() {
     img.className = 'shot__img';
     img.decoding = 'async';
     img.alt = p.caption || (found ? found.row.place : '示例照片');
-    img.style.setProperty('--ar', `${p.width} / ${p.height}`);
+    if (p.width > 0 && p.height > 0) img.style.setProperty('--ar', `${p.width} / ${p.height}`);
     // 网格加载 720px 缩略图，点开全屏才取大图；旧行没有缩略图就回落到大图。
     // src 由下面的 IntersectionObserver 按滚动位置提前 2000px 赋值 ——
     // iOS Safari 的原生 loading=lazy 预取距离太短，4G 下滚动会跑赢下载。
     img.dataset.src = publicUrl(p.thumb || p.path);
-    // 位置在加载前就由 aspect-ratio 定好了，所以这里只负责淡入；
-    // 万一实际比例和数据库不符，observeChildren 会自己触发重排。
+    // 位置在加载前就由 aspect-ratio 定好了（与 wall.js 同一比例），
+    // 加载完成只做淡入，不触发任何重排
     img.addEventListener('load', () => img.classList.add('is-loaded'));
     // 请求失败（离线、文件被删）：标出来，别让格子永远"呼吸"下去
     img.addEventListener('error', () => fig.classList.add('shot--err'));
