@@ -98,8 +98,10 @@
    -------------------------------------------------------------- */
 
 .wall { position: relative; width: 100%; }
-/* 位置全部由 wall.js 用 transform 写入 */
-.wall .shot { position: absolute; left: 0; top: 0; }
+/* 位置全部由 wall.js 用 transform 写入。
+   margin 必须清零：<figure> 的 UA 默认是 margin-inline 40px + 上下 1em，
+   会把绝对定位的盒子整体推右 40px，页面出现横向滚动、右列被裁 */
+.wall .shot { position: absolute; left: 0; top: 0; margin: 0; }
 
 .shot {
   display: block;
