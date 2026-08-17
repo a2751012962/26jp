@@ -7,8 +7,11 @@ npm run vendor` → 连同本目录的变化一起提交。
 
 | 文件 | 包 | 版本 | 许可 |
 | --- | --- | --- | --- |
-| `egjs-grid.min.js` | [@egjs/grid](https://github.com/naver/egjs-grid) | 1.18.0 | MIT |
 | `photoswipe.esm.min.js` / `photoswipe-lightbox.esm.min.js` / `photoswipe.css` | [photoswipe](https://github.com/dimsemenov/PhotoSwipe) | 5.4.4 | MIT |
 | `supabase.min.js` | [@supabase/supabase-js](https://github.com/supabase/supabase-js) | 2.112.3 | MIT |
+
+瀑布流不用库：每张图的宽高存在数据库里，布局是纯数学（assets/wall.js）。
+之前用过 @egjs/grid，它按"先渲染再测量"工作，手机上会拿套用列宽之前的
+高度定位，版面出大块空洞，已移除。
 
 只有 `photos.html` 用到这些；行程页 `index.html` 保持零依赖、可离线打开。

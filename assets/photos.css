@@ -97,10 +97,12 @@
    -------------------------------------------------------------- */
 
 .wall { position: relative; width: 100%; }
+/* 位置全部由 wall.js 用 transform 写入 */
+.wall .shot { position: absolute; left: 0; top: 0; }
 
 .shot {
   display: block;
-  width: 100%;        /* 实际宽度由 MasonryGrid 覆盖 */
+  width: 100%;        /* 实际宽度由 wall.js 覆盖 */
   /* 占位底色要和页面背景拉开差距，等待中的图才读得出"在加载"，
      而不是一片和背景同色的"空洞" */
   background: oklch(0.865 0.01 85);

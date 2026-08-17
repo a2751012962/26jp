@@ -14,7 +14,6 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const FILES = [
-  ['@egjs/grid/dist/grid.min.js', 'egjs-grid.min.js'],
   ['photoswipe/dist/photoswipe.esm.min.js', 'photoswipe.esm.min.js'],
   ['photoswipe/dist/photoswipe-lightbox.esm.min.js', 'photoswipe-lightbox.esm.min.js'],
   ['photoswipe/dist/photoswipe.css', 'photoswipe.css'],

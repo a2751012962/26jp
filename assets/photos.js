@@ -69,6 +69,7 @@ function renderWall() {
     const fig = document.createElement('figure');
     fig.className = 'shot';
     fig.dataset.id = p.id;
+    fig.dataset.ratio = p.width / p.height;   // 布局直接用它算高度，不测量
 
     const a = document.createElement('a');
     a.href = publicUrl(p.path);
