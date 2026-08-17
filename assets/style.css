@@ -267,27 +267,30 @@ body {
   opacity: 0.32;
 }
 
-/* 相机图标：真正的按钮，跳转到该地点的照片页 */
+/* 相机图标：真正的按钮，跳转到该地点的照片页。
+   svg 与复制图标用完全相同的几何（同尺寸、同基线偏移），对齐是构造
+   出来的；触摸热区用绝对定位的伪元素扩到 2.2em，不占布局。 */
 .ico-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.9em;
-  min-height: 1.9em;
-  margin-left: 0.1em;
-  vertical-align: -0.55em;   /* 热区变大，但视觉重心仍贴着文字基线 */
+  position: relative;
+  display: inline-block;
+  margin-left: 0.35em;
   color: var(--ac);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+.ico-btn::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2em;
+  height: 2.2em;
+  /* 热区向右偏：左缘停在复制图标右侧，不抢复制的点击 */
+  transform: translate(-35%, -50%);
+}
 .ico-btn:hover { color: var(--acDeep); }
 .ico-btn:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; }
-.ico-btn .ico {
-  width: 0.82em;
-  height: 0.82em;
-  vertical-align: middle;
-  opacity: 0.85;
-}
+.ico-btn .ico { opacity: 0.85; }
 
 /* 摄影师模式下"还没有照片"的地点：入口在，但压暗，一眼能分出有无 */
 .ico-btn--empty .ico { opacity: 0.28; }
