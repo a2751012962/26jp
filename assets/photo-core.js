@@ -97,6 +97,31 @@ export async function uploadOne(spot, file, { original = false, sort = 0 } = {})
   return { path, size: big.size, thumbSize: small.size };
 }
 
+/* ---------- 页面通用：提示条 + 选图过滤（photos/upload 两页共用） ---------- */
+
+let toastTimer;
+export function toast(msg, ms = 2200) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('is-on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('is-on'), ms);
+}
+
+/* 过滤出图片文件；被跳过时给出提示，别让人以为按钮坏了。
+   某些安卓文件管理器把 HEIC/相机拷出的文件报成 octet-stream。 */
+export function filterImages(files) {
+  const all = Array.from(files);
+  const list = all.filter((f) => f.type.startsWith('image/'));
+  if (!list.length && all.length) {
+    toast('选中的文件浏览器没认出是图片，试试从「相册」里选', 3200);
+  } else if (all.length > list.length) {
+    toast(`跳过 ${all.length - list.length} 个非图片文件`, 2600);
+  }
+  return list;
+}
+
 /* ---------- 「哪些地点有照片」清单缓存 ---------- */
 
 export function bumpManifest(spot, remove = false) {

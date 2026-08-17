@@ -34,7 +34,9 @@
   缩略图，点开全屏才取大图 —— 4G 下首屏 <1MB，秒级出图。720 = 列宽上限 340 CSS px
   × 2x 屏 680 物理像素再留余量；两个文件同名（`.t.jpg` 后缀区分），删除时一起清。
 - 照片墙用 [@egjs/grid](https://github.com/naver/egjs-grid) 的 MasonryGrid：列数和列宽按容器实际宽度实时算（ResizeObserver），没有写死的断点，转屏立刻重排。点开是 [PhotoSwipe](https://github.com/dimsemenov/PhotoSwipe) 全屏，可捏合缩放。
-- 后端是 Supabase（项目 `26jp-trip-photos`，东京区）。权限由 RLS 把关：**任何人可读，只有登录的人能传/删**。`assets/config.js` 里的 publishable key 本来就是给浏览器用的，可以公开提交；service_role key 绝对不要放进去。
+- 后端是 Supabase（项目 `26jp-trip-photos`，东京区）。权限策略见上面「权限」一条：
+  读写都对拿到链接的人开放。`assets/config.js` 里的 publishable key 本来就是给浏览器用的，
+  可以公开提交；service_role key 绝对不要放进去。
 
 ## 颜色约定
 

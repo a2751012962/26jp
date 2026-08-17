@@ -160,21 +160,8 @@
   z-index: 60;
 }
 
-/* ---------- 登录弹窗 ---------- */
+/* ---------- 表单控件 ---------- */
 
-.pdialog {
-  border: 0;
-  padding: clamp(18px, 3vw, 28px);
-  width: min(24rem, calc(100% - 2rem));
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--sans);
-}
-.pdialog::backdrop { background: oklch(0.25 0.01 60 / 0.45); }
-.pdialog__title { margin: 0 0 0.5em; font: 700 1.15rem/1.3 var(--serif); }
-.pdialog__hint { margin: 0 0 1em; font: 400 0.875rem/1.6 var(--sans); color: var(--muted); }
-.pdialog__row { display: flex; justify-content: flex-end; gap: 0.5em; margin-top: 0.9em; }
-.pdialog__msg { margin-top: 0.8em; font: 400 0.85rem/1.5 var(--sans); color: var(--ac); }
 .pinput {
   width: 100%;
   box-sizing: border-box;
@@ -186,7 +173,6 @@
   color: var(--ink);
 }
 .pinput:focus { outline: 2px solid var(--ac); outline-offset: -1px; }
-.pdialog .pinput + .pinput { margin-top: 0.6em; }
 
 /* 照片页的提示条要能显示任意文案 */
 .photos-body .toast { white-space: pre-line; text-align: center; }
@@ -233,6 +219,10 @@ select.pinput { appearance: auto; -webkit-appearance: auto; }
 .up-drop strong { color: var(--acDeep); }
 .up-drop:hover, .up-drop.is-over { border-color: var(--ac); background: var(--acSoft); }
 .up-drop:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; }
+/* 一批上传进行中：入口全部锁住 */
+.up-drop.is-disabled { opacity: 0.45; cursor: default; }
+.up-drop.is-disabled:hover { border-color: var(--line); background: var(--paper); }
+.up-days .chip[disabled] { opacity: 0.45; cursor: default; }
 
 .up-queue {
   list-style: none;

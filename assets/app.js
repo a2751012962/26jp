@@ -269,22 +269,11 @@
   var MANIFEST_KEY = (window.TRIP_CONFIG && window.TRIP_CONFIG.manifestKey) || 'trip-photo-spots';
   var photoSpots = new Set();
 
-  /* 摄影师模式：所有带 slug 的地点都显示相机入口（没照片的是半透明空心），
-     否则第一张照片没有地方可传。两种方式进入：
-       · 这台设备在照片页登录过 —— supabase-js 会把会话存在
-         localStorage 的 sb-…-auth-token 键下，读键名即可判断，不用引库；
-       · 网址加 ?edit=1（换设备/会话过期时的兜底）。
-     其他人始终只看到有照片的地点，卡片保持干净。 */
-  function isEditor() {
-    if (params.get('edit') === '1') return true;
-    try {
-      for (var i = 0; i < localStorage.length; i++) {
-        if (/^sb-.+-auth-token$/.test(localStorage.key(i))) return true;
-      }
-    } catch (e) {}
-    return false;
-  }
-  var editor = isEditor();
+  /* 摄影师模式：?edit=1 时所有带 slug 的地点显示相机入口（没照片的是
+     半透明空心），给还没有照片的地点开传第一张的门。日常批量传照片
+     走 upload.html（有完整的地点/日期选择）。平时不带参数打开，
+     只有已有照片的地点显示相机，卡片保持干净。 */
+  var editor = params.get('edit') === '1';
 
   function readManifestCache() {
     try {

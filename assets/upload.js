@@ -3,21 +3,15 @@
  *   · 选地点（按行程 slug 去重，标注出现在哪几天）
  *   · 多选 / 拖拽，一次多少张都行；3 张并行，每张一行进度
  *   · 画质：高质量压缩（4096px / q0.92）或原图直传（见 photo-core.js）
- *   · 只有登录后才看得到上传面板
+ *   · 免登录，拿到链接就能传；一次只跑一批，批内所有输入都锁住
  */
-import { CFG, sb, uploadOne, bumpManifest, spotList } from './photo-core.js';
+import { CFG, sb, uploadOne, bumpManifest, spotList, toast, filterImages } from './photo-core.js';
 
 const $ = (id) => document.getElementById(id);
 const CONCURRENCY = 3;
 
-let toastTimer;
-function toast(msg, ms = 2200) {
-  const t = $('toast');
-  t.textContent = msg;
-  t.classList.add('is-on');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('is-on'), ms);
-}
+// Enter 落在下拉框/单选钮上时，别让表单隐式提交把页面刷掉
+$('panel').addEventListener('submit', (e) => e.preventDefault());
 
 /* ---------- 日期筛选 + 地点下拉框 ----------
    两者都从 assets/data.js 现场生成：改行程 → 部署后这里自动跟着变，
@@ -113,29 +107,46 @@ function row(file) {
   };
 }
 
+/* 批内把所有会改变去向的输入都锁住：地点、日期条、拖拽框、文件选择。
+   否则上传中途换地点/换筛选会触发 resetBatch()，把 sort 归零、清掉
+   进度列表，而在途的 worker 还在按旧序号写库。 */
+let running = false;
+
+function setBusy(on) {
+  running = on;
+  sel.disabled = on;
+  for (const c of dayWrap.children) c.disabled = on;
+  drop.classList.toggle('is-disabled', on);
+  $('file').disabled = on;
+}
+
 async function runBatch(files) {
-  const all = Array.from(files);
-  const list = all.filter((f) => f.type.startsWith('image/'));
-  if (!list.length) {
-    if (all.length) toast('选中的文件浏览器没认出是图片，试试从「相册」里选', 3200);
+  if (running) {
+    toast('上一批还在传，等它完成再加');
     return;
   }
-  if (all.length > list.length) toast(`跳过 ${all.length - list.length} 个非图片文件`, 2600);
+  const list = filterImages(files);
+  if (!list.length) return;
 
   const spot = currentSpot();
   const original = document.querySelector('input[name="q"]:checked').value === 'raw';
-  sel.disabled = true;
+  setBusy(true);
   $('summary').hidden = true;
 
-  // 新照片排在该地点已有照片之后
+  // 新照片排在该地点已有照片之后；查不到就别猜，猜错会把已有排序打乱
   if (batchSeq === 0) {
-    const { count } = await sb.from(CFG.table)
+    const { count, error } = await sb.from(CFG.table)
       .select('id', { count: 'exact', head: true }).eq('spot', spot);
+    if (error) {
+      setBusy(false);
+      toast('读取该地点已有照片数失败，稍后再试：' + error.message, 3200);
+      return;
+    }
     batchSeq = count || 0;
   }
 
   const rows = list.map((f) => row(f));
-  let done = 0, ok = 0;
+  let ok = 0;
 
   let next = 0;
   async function worker() {
@@ -150,12 +161,11 @@ async function runBatch(files) {
       } catch (err) {
         rows[i].set('✕ ' + (err.message || err), 'err');
       }
-      done++;
     }
   }
   await Promise.all(Array.from({ length: Math.min(CONCURRENCY, list.length) }, worker));
 
-  sel.disabled = false;
+  setBusy(false);
   if (ok) bumpManifest(spot);
   $('summary').hidden = false;
   $('summary-text').textContent =
@@ -165,9 +175,9 @@ async function runBatch(files) {
 /* ---------- 选择与拖拽 ---------- */
 
 const drop = $('drop');
-drop.addEventListener('click', () => $('file').click());
+drop.addEventListener('click', () => { if (!running) $('file').click(); });
 drop.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); }
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (!running) $('file').click(); }
 });
 $('file').addEventListener('change', (e) => {
   runBatch(e.target.files);

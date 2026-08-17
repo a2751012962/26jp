@@ -6,10 +6,10 @@
  *   · 点开是 PhotoSwipe 全屏，可捏合缩放、左右滑。
  *   · 上传走 photo-core.js：压到最长边 4096px / JPEG q0.92（约 1‒2MB）。
  *     批量传、原图直传在专门的 upload.html。
- *   · 谁都能看；只有登录的人（你）看得到上传和管理按钮。
+ *   · 免登录：拿到链接就能看、能传、能删（链接只私下分享，RLS 已放开）。
  */
 import PhotoSwipeLightbox from './vendor/photoswipe-lightbox.esm.min.js';
-import { CFG, sb, publicUrl, uploadOne, bumpManifest } from './photo-core.js';
+import { CFG, sb, publicUrl, uploadOne, bumpManifest, toast, filterImages } from './photo-core.js';
 import { createWall } from './wall.js';
 
 const $ = (id) => document.getElementById(id);
@@ -56,17 +56,6 @@ $('back').addEventListener('click', (e) => {
     history.back();
   }
 });
-
-/* ---------- 提示条 ---------- */
-
-let toastTimer;
-function toast(msg, ms = 1800) {
-  const t = $('toast');
-  t.textContent = msg;
-  t.classList.add('is-on');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('is-on'), ms);
-}
 
 /* ---------- 瀑布流 ---------- */
 
@@ -185,13 +174,8 @@ function progressBar() {
 }
 
 async function uploadFiles(files) {
-  const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
-  if (!list.length) {
-    // 某些安卓文件管理器把 HEIC/相机拷出来的文件报成 octet-stream，
-    // 静默返回会让人以为按钮坏了
-    if (files.length) toast('选中的文件浏览器没认出是图片，试试从「相册」里选', 3200);
-    return;
-  }
+  const list = filterImages(files);
+  if (!list.length) return;
 
   const bar = progressBar();
   const btn = $('upload');
